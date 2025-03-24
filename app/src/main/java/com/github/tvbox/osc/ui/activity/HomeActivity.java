@@ -268,6 +268,7 @@ public class HomeActivity extends BaseActivity {
                     String jarUrl=!jar.isEmpty()?jar:ApiConfig.get().getSpider();
                     File cspCacheDir = new File(cspCachePath + MD5.string2MD5(jarUrl)+".jar");
                     if (!cspCacheDir.exists()){
+                        reloadHome()
                         return;
                     }
                     new Thread(() -> {
