@@ -15,7 +15,7 @@ import com.github.tvbox.osc.util.OkGoHelper;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-
+import com.github.tvbox.osc.util.Proxy;
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.BufferedOutputStream;
@@ -141,7 +141,10 @@ public class RemoteServer extends NanoHTTPD {
                     if (params.containsKey("do")) {
                         Object[] rs = ApiConfig.get().proxyLocal(params);
                         return getProxy(rs);
-                       
+                    }
+                    if (params.containsKey("go")) {
+                        Object[] rs = Proxy.proxy(params);
+                        return getProxy(rs);
                     }
                 } else if (fileName.startsWith("/file/")) {
                     try {
