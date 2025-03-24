@@ -14,18 +14,27 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+          
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt'
+          java-version: '17'
+          
       - name: Build With Gradle
         run: |
           chmod +x gradlew
           ./gradlew assemblerelease --build-cache --parallel --daemon --warning-mode all
+
       - name: Prepare App
         run: |
           mkdir -p ${{ github.workspace }}/apk/
           for file in `find ~ -name "*.apk" -print`; do
             mv "$file" ${{ github.workspace }}/apk/
           done
+
       - name: Upload App To Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4  # 更新为 v4
         with:
           name: com.github.tvbox.osc
           path: ${{ github.workspace }}/apk/*
