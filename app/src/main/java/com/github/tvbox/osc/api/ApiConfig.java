@@ -23,6 +23,7 @@ import com.github.tvbox.osc.util.DefaultConfig;
 import com.github.tvbox.osc.util.HawkConfig;
 import com.github.tvbox.osc.util.M3U8;
 import com.github.tvbox.osc.util.MD5;
+import com.github.tvbox.osc.util.FileUtils;
 import com.github.tvbox.osc.util.VideoParseRuler;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -234,14 +235,22 @@ public class ApiConfig {
         String[] urls = spider.split(";md5;");
         String jarUrl = urls[0];
         String md5 = urls.length > 1 ? urls[1].trim() : "";
-        File cache = new File(App.getInstance().getFilesDir().getAbsolutePath() + "/csp.jar");
-
+        File cache = new File(App.getInstance().getFilesDir().getAbsolutePath() + "/csp/"+MD5.string2MD5(jarUrl)+".jar");
         if (!md5.isEmpty() || useCache) {
             if (cache.exists() && (useCache || MD5.getFileMd5(cache).equalsIgnoreCase(md5))) {
                 if (jarLoader.load(cache.getAbsolutePath())) {
                     callback.success();
                 } else {
                     callback.error("从缓存加载jar失败");
+                }
+                return;
+            }
+        }else {
+            if (Boolean.parseBoolean(jarCache) && cache.exists() && !FileUtils.isWeekAgo(cache)) {
+                if (jarLoader.load(cache.getAbsolutePath())) {
+                    callback.success();
+                } else {
+                    callback.error("");
                 }
                 return;
             }
@@ -292,7 +301,6 @@ public class ApiConfig {
                     public void onSuccess(Response<File> response) {
                         File file = response.body();
                         if (file != null && file.exists()) {
-                            LOG.i("echo---jar Trying to load: " + file.getAbsolutePath());
                             try {
                                 if (jarLoader.load(file.getAbsolutePath())) {
                                     callback.success();
@@ -333,9 +341,11 @@ public class ApiConfig {
         parseJson(apiUrl, sb.toString());
     }
 
+    private static  String jarCache ="true";
     private void parseJson(String apiUrl, String jsonStr) {
 
         JsonObject infoJson = new Gson().fromJson(jsonStr, JsonObject.class);
+        jarCache = DefaultConfig.safeJsonString(infoJson, "jarCache", "true");
         // spider
         spider = DefaultConfig.safeJsonString(infoJson, "spider", "");
         // wallpaper
@@ -394,6 +404,9 @@ public class ApiConfig {
                 pb.setExt(ext);
                 pb.setType(DefaultConfig.safeJsonInt(obj, "type", 0));
                 parseBeanList.add(pb);
+            }
+            if(!parseBeanList.isEmpty()){
+                addSuperParse();
             }
         }
         // 获取默认解析
@@ -834,6 +847,18 @@ public class ApiConfig {
         return content;
     }
 
+    public void clearJarLoader()
+    {
+        jarLoader.clear();
+    }
+    private void addSuperParse(){
+        ParseBean superPb = new ParseBean();
+        superPb.setName("超级解析");
+        superPb.setUrl("SuperParse");
+        superPb.setExt("");
+        superPb.setType(4);
+        parseBeanList.add(0, superPb);
+    }	
     String miTV(String url) {
         if (url.startsWith("p") || url.startsWith("mitv")) {
 
