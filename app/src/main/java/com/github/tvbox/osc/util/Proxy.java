@@ -8,7 +8,7 @@ public class Proxy {
         try {
             String what = params.get("go");
             assert what != null;
-            if ((what.equals("SuperParse")) {
+            if (what.equals("SuperParse")) {
                 return SuperParse.loadHtml(params.get("flag"), params.get("url"));
             }
 
@@ -17,5 +17,4 @@ public class Proxy {
         }
         return null;
     }
-
 }
