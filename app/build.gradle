@@ -44,23 +44,14 @@ android {
                 abiFilters 'armeabi-v7a'
             }
         }
-        arm64 {
-            dimension = "abi"
-            ndk {
-                abiFilters 'arm64-v8a'
-            }
-        }
+
 
         generic  {
             //通用版本
             dimension = "brand"
         }
 
-        hisense {
-            //海信的
-            applicationId 'com.github.hisense.osc.tk'
-            dimension = "brand"
-        }
+
     }
     applicationVariants.configureEach { variant ->
         variant.outputs.configureEach { output ->
