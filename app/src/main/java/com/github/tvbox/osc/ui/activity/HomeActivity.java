@@ -275,6 +275,7 @@ public class HomeActivity extends BaseActivity {
                         try {
                             FileUtils.deleteFile(cspCacheDir);
                             ApiConfig.get().clearJarLoader();
+                            reloadHome();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
