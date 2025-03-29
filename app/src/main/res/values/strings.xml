@@ -105,7 +105,7 @@
     <string name="set_bkup_fail">Backup Fail</string>
     <string name="set_bkup_fail_hk">Backup Fail (Hawk)</string>
     <string name="set_bkup_fail_db">Backup Fail (DB)</string>
-    <string name="set_rest_ok">Restore Success, please Restart</string>
+    <string name="set_rest_ok">Restore Success, Automatic Restart</string>
     <string name="set_rest_fail_hk">Restore Fail (Hawk)</string>
     <string name="set_rest_fail_db">Restore Fail (DB)</string>
     <string name="set_permission_ok">Write Permission Granted</string>
