@@ -379,11 +379,16 @@ public class HomeActivity extends BaseActivity {
         Hawk.put(HawkConfig.HOME_REC, homeRec);
     }
 
+    private boolean skipNextUpdate = false;	
     private void initViewModel() {
         sourceViewModel = new ViewModelProvider(this).get(SourceViewModel.class);
         sourceViewModel.sortResult.observe(this, new Observer<AbsSortXml>() {
             @Override
             public void onChanged(AbsSortXml absXml) {
+                if (skipNextUpdate) {
+                    skipNextUpdate = false;
+                    return;
+                }
                 showSuccess();
                 if (absXml != null && absXml.classes != null && absXml.classes.sortList != null) {
                     sortAdapter.setNewData(DefaultConfig.adjustSort(ApiConfig.get().getHomeSourceBean().getKey(), absXml.classes.sortList, true));
@@ -613,49 +618,65 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-
-        // takagen99: Add check for VOD Delete Mode
+        //打断加载
+        if(isLoading()){
+            refreshEmpty();
+            return;
+        }
+        // 如果处于 VOD 删除模式，则退出该模式并刷新界面
         if (HawkConfig.hotVodDelete) {
             HawkConfig.hotVodDelete = false;
             UserFragment.homeHotVodAdapter.notifyDataSetChanged();
-        } else {
-            int i;
-            if (this.fragments.size() <= 0 || this.sortFocused >= this.fragments.size() || (i = this.sortFocused) < 0) {
-                exit();
+            return;
+        }
+
+        // 检查 fragments 状态
+        if (this.fragments.size() <= 0 || this.sortFocused >= this.fragments.size() || this.sortFocused < 0) {
+            doExit();
+            return;
+        }
+
+        BaseLazyFragment baseLazyFragment = this.fragments.get(this.sortFocused);
+        if (baseLazyFragment instanceof GridFragment) {
+            GridFragment grid = (GridFragment) baseLazyFragment;
+            // 如果当前 Fragment 能恢复之前保存的 UI 状态，则直接返回
+            if (grid.restoreView()) {
                 return;
             }
-            BaseLazyFragment baseLazyFragment = this.fragments.get(i);
-            if (baseLazyFragment instanceof GridFragment) {
-                View view = this.sortFocusView;
-                GridFragment grid = (GridFragment) baseLazyFragment;
-                if (grid.restoreView()) {
-                    return;
-                }// 还原上次保存的UI内容
-                if (view != null && !view.isFocused()) {
-                    this.sortFocusView.requestFocus();
-                } else if (this.sortFocused != 0) {
-                    this.mGridView.setSelection(0);
-                } else {
-                    exit();
-                }
-            } else if (baseLazyFragment instanceof UserFragment && UserFragment.tvHotListForGrid.canScrollVertically(-1)) {
-                UserFragment.tvHotListForGrid.scrollToPosition(0);
-                this.mGridView.setSelection(0);
-            } else {
-                exit();
+            // 如果 sortFocusView 存在且没有获取焦点，则请求焦点
+            if (this.sortFocusView != null && !this.sortFocusView.isFocused()) {
+                this.sortFocusView.requestFocus();
+                return;
             }
+            // 如果当前不是第一个界面，则将列表设置到第一项
+            else if (this.sortFocused != 0) {
+                this.mGridView.setSelection(0);
+                return;
+            } else {
+                doExit();
+                return;
+            }
+        } else if (baseLazyFragment instanceof UserFragment && UserFragment.tvHotListForGrid.canScrollVertically(-1)) {
+            // 如果 UserFragment 列表可以向上滚动，则滚动到顶部
+            UserFragment.tvHotListForGrid.scrollToPosition(0);
+            this.mGridView.setSelection(0);
+            return;
+        } else {
+            doExit();
+            return;
         }
     }
 
-    private void exit() {
+    private void doExit() {
+        // 如果两次返回间隔小于 2000 毫秒，则退出应用
         if (System.currentTimeMillis() - mExitTime < 2000) {
-            //这一段借鉴来自 q群老哥 IDCardWeb
             EventBus.getDefault().unregister(this);
             AppManager.getInstance().appExit(0);
             ControlManager.get().stopServer();
             finish();
-            super.onBackPressed();
+            System.exit(0);
         } else {
+            // 否则仅提示用户，再按一次退出应用
             mExitTime = System.currentTimeMillis();
             Toast.makeText(mContext, getString(R.string.hm_exit), Toast.LENGTH_SHORT).show();
         }
@@ -896,6 +917,12 @@ public class HomeActivity extends BaseActivity {
         HomeActivity.this.startActivity(intent);
     }
 
+    private void refreshEmpty() {
+        skipNextUpdate=true;
+        showSuccess();
+        sortAdapter.setNewData(DefaultConfig.adjustSort(ApiConfig.get().getHomeSourceBean().getKey(), new ArrayList<>(), true));
+        initViewPager(null);
+    }	
 //    public void onClick(View v) {
 //        FastClickCheckUtil.check(v);
 //        if (v.getId() == R.id.tvFind) {
