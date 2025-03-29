@@ -18,9 +18,14 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class pyLoader implements IPyLoader {
-    private final PythonLoader pythonLoader = PythonLoader.getInstance().setApplication(App.getInstance());
-    private static final ConcurrentHashMap<String, Spider> spiders = new ConcurrentHashMap<>();
+    private final PythonLoader pythonLoader;
+    private final ConcurrentHashMap<String, Spider> spiders;
     private String lastConfig = null; // 记录上次的配置
+
+    public pyLoader() {
+        pythonLoader = PythonLoader.getInstance().setApplication(App.getInstance());
+        spiders = new ConcurrentHashMap<>();
+    }
 
     @Override
     public void clear() {
