@@ -30,10 +30,10 @@ import okhttp3.Call;
 import okhttp3.Response;
 
 public class PythonLoader {
-    private ConcurrentHashMap<String, Spider> spiders = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, Spider> spiders = new ConcurrentHashMap<>();
     private static PythonLoader sInstance;
     private Application app;
-    private HashMap<String, JSONObject> siteMap;
+    private final HashMap<String, JSONObject> siteMap;
     Python pyInstance;
     PyObject pyApp;
     Python.Platform androidPlatform;
