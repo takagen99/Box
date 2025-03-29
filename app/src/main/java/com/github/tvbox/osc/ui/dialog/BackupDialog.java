@@ -2,8 +2,10 @@ package com.github.tvbox.osc.ui.dialog;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Environment;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Toast;
 
@@ -145,6 +147,12 @@ public class BackupDialog extends BaseDialog {
                             }
                         }
                         Toast.makeText(getContext(), HomeActivity.getRes().getString(R.string.set_rest_ok), Toast.LENGTH_SHORT).show();
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                restartApp();
+                            }
+                        }, 3000);
                     } else {
                         Toast.makeText(getContext(), HomeActivity.getRes().getString(R.string.set_rest_fail_hk), Toast.LENGTH_SHORT).show();
                     }
@@ -154,6 +162,17 @@ public class BackupDialog extends BaseDialog {
             }
         } catch (Throwable e) {
             e.printStackTrace();
+        }
+    }
+    private void restartApp() {
+        Context context = getContext();
+        if (context != null) {
+            Intent i = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
+            if (i != null) {
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                context.startActivity(i);
+                System.exit(0);
+            }
         }
     }
 
