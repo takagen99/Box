@@ -1,3 +1,4 @@
+
 package com.github.catvod.crawler;
 
 import android.content.Context;
@@ -112,13 +113,17 @@ public class JarLoader {
         File cache = new File(App.getInstance().getFilesDir().getAbsolutePath() + "/csp/" + key + ".jar");
         if (!md5.isEmpty()) {
             if (cache.exists() && MD5.getFileMd5(cache).equalsIgnoreCase(md5)) {
-                loadClassLoader(cache.getAbsolutePath(), key);
-                return classLoaders.get(key);
+                if(loadClassLoader(cache.getAbsolutePath(), key)){
+                    return classLoaders.get(key);
+                }else {
+                    return null;
+                }
             }
         }else {
             if (cache.exists() && !FileUtils.isWeekAgo(cache)) {
-                loadClassLoader(cache.getAbsolutePath(), key);
-                return classLoaders.get(key);
+                if(loadClassLoader(cache.getAbsolutePath(), key)){
+                    return classLoaders.get(key);
+                }
             }
         }
         try {

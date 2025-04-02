@@ -251,10 +251,8 @@ public class ApiConfig {
             if (Boolean.parseBoolean(jarCache) && cache.exists() && !FileUtils.isWeekAgo(cache)) {
                 if (jarLoader.load(cache.getAbsolutePath())) {
                     callback.success();
-                } else {
-                    callback.error("");
+                    return;
                 }
-                return;
             }
         }
 
@@ -266,7 +264,7 @@ public class ApiConfig {
                 .execute(new AbsCallback<File>() {
 
                     @Override
-                    public File convertResponse(okhttp3.Response response) throws Throwable {
+                    public File convertResponse(okhttp3.Response response){
                         File cacheDir = cache.getParentFile();
                         assert cacheDir != null;
                         if (!cacheDir.exists()) cacheDir.mkdirs();
@@ -279,7 +277,8 @@ public class ApiConfig {
                                 LOG.i("echo---jar Response: " + respData);
                                 byte[] imgJar = getImgJar(respData);
                                 if (imgJar == null || imgJar.length == 0) {
-                                    throw new IOException("Generated JAR data is empty");
+                                    LOG.e("echo---Generated JAR data is empty");
+                                    callback.error("JAR data is empty");
                                 }
                                 fos.write(imgJar);
                             } else {
@@ -311,7 +310,7 @@ public class ApiConfig {
                                 }
                             } catch (Exception e) {
                                 LOG.e("echo---jar Loader threw exception: " + e.getMessage());
-                                callback.error("加载异常: " + e.getMessage());
+                                callback.error("JAR加载异常: " + e.getMessage());
                             }
                         } else {
                             LOG.e("echo---jar File not found");
@@ -344,7 +343,7 @@ public class ApiConfig {
 
     private static  String jarCache ="true";
     private void parseJson(String apiUrl, String jsonStr) {
-        pyLoader.setConfig(jsonStr);
+//        pyLoader.setConfig(jsonStr);
         JsonObject infoJson = new Gson().fromJson(jsonStr, JsonObject.class);
         jarCache = DefaultConfig.safeJsonString(infoJson, "jarCache", "true");
         // spider
