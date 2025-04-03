@@ -72,6 +72,7 @@ public class pyLoader implements IPyLoader {
 
     @Override
     public Object[] proxyInvoke(Map<String, String> params){
+        if(recentPyApi==null)return null;
         LOG.i("echo-recentPyApi" + recentPyApi);
         try {
             PythonSpider originalSpider = (PythonSpider) getSpider(MD5.string2MD5(recentPyApi), recentPyApi,"");
