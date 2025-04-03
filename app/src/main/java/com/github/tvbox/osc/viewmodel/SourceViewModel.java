@@ -42,6 +42,7 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -235,9 +236,12 @@ public class SourceViewModel extends ViewModel {
                         }
                     });
         } else if (type == 4) {
+            String extend=sourceBean.getExt();
+            if(URLEncoder.encode(extend).length()>1000)extend="";
             OkGo.<String>get(sourceBean.getApi())
                     .tag(sourceBean.getKey() + "_sort")
                     .params("filter", "true")
+                    .params("extend", extend)
                     .execute(new AbsCallback<String>() {
                         @Override
                         public String convertResponse(okhttp3.Response response) throws Throwable {
@@ -498,6 +502,7 @@ public class SourceViewModel extends ViewModel {
             urlid = pushUrl;
         }
         String id = urlid;
+    
         SourceBean sourceBean = ApiConfig.get().getSource(sourceKey);
         if (sourceBean == null) {
             detailResult.postValue(null);
@@ -509,22 +514,45 @@ public class SourceViewModel extends ViewModel {
             spThreadPool.execute(new Runnable() {
                 @Override
                 public void run() {
+                    ExecutorService executor = Executors.newSingleThreadExecutor();
+                    Future<String> future = executor.submit(new Callable<String>() {
+                        @Override
+                        public String call() {
+                            Spider sp = ApiConfig.get().getCSP(sourceBean);
+                            List<String> ids = new ArrayList<>();
+                            ids.add(id);
+                            try {
+                                return sp.detailContent(ids);
+                            } catch (Exception e) {
+                                LOG.i("echo--getDetail--error: " + e.getMessage());
+                                return "";
+                            }
+                        }
+                    });
+
+                    String json = null;
                     try {
-                        Spider sp = ApiConfig.get().getCSP(sourceBean);
-                        List<String> ids = new ArrayList<>();
-                        ids.add(id);
-                        json(detailResult, sp.detailContent(ids), sourceBean.getKey());
-                    } catch (Throwable th) {
-                        th.printStackTrace();
-                        detailResult.postValue(null);
+                        json = future.get(15, TimeUnit.SECONDS);
+                        LOG.i("echo--getDetail--result:" + json);
+                    } catch (TimeoutException e) {
+                        LOG.i("echo--getDetail--timeout");
+                        future.cancel(true);
+                    } catch (Exception e) {
+                        LOG.i("echo--getDetail--error: " + e.getMessage());
+                    } finally {
+                        json(detailResult, json, sourceBean.getKey());
+                        executor.shutdown();
                     }
                 }
             });
         } else if (type == 0 || type == 1 || type == 4) {
+            String extend=sourceBean.getExt();
+            if(URLEncoder.encode(extend).length()>1000)extend="";
             OkGo.<String>get(sourceBean.getApi())
                     .tag("detail")
                     .params("ac", type == 0 ? "videolist" : "detail")
                     .params("ids", id)
+                    .params("extend", extend)
                     .execute(new AbsCallback<String>() {
 
                         @Override
@@ -551,7 +579,7 @@ public class SourceViewModel extends ViewModel {
                         @Override
                         public void onError(Response<String> response) {
                             super.onError(response);
-                            detailResult.postValue(null);
+                            json(detailResult, "", sourceBean.getKey());
                         }
                     });
         } else {
@@ -748,7 +776,9 @@ public class SourceViewModel extends ViewModel {
                 result.put("playUrl", playUrl);
                 //直接就有
             } else if (type == 4) {
-                okhttp3.Response response = OkGo.<String>get(sourceBean.getApi()).params("play", url).params("flag", playFlag).tag("play").execute();
+                String extend=sourceBean.getExt();
+                if(URLEncoder.encode(extend).length()>1000)extend="";
+                okhttp3.Response response = OkGo.<String>get(sourceBean.getApi()).params("play", url).params("flag", playFlag).params("extend", extend).tag("play").execute();
                 String json = response.body().string();
                 result = new JSONObject(json);
             }
