@@ -445,7 +445,6 @@ public class HomeActivity extends BaseActivity {
         mGridView.requestFocus();
 
         if (dataInitOk && jarInitOk) {
-            showLoading();
             sourceViewModel.getSort(ApiConfig.get().getHomeSourceBean().getKey());
             if (hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 LOG.e("有");
@@ -491,7 +490,7 @@ public class HomeActivity extends BaseActivity {
                                     Toast.makeText(HomeActivity.this, getString(R.string.hm_notok), Toast.LENGTH_SHORT).show();
                                 else
                                     Toast.makeText(HomeActivity.this, msg, Toast.LENGTH_SHORT).show();
-                                initData();
+                                reloadHome();
                             }
                         },50);
                     }
