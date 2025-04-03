@@ -5,6 +5,8 @@ import requests
 from importlib.machinery import SourceFileLoader  ### 导入这个模块
 from urllib import parse
 import json
+import sys
+sys.dont_write_bytecode = True
 
 def createFile(file_path):
     if os.path.exists(file_path) is False:
@@ -84,7 +86,6 @@ def init(ru,extend):
         if sp != None:
             sp.setExtendInfo(sParam[key])
             spoList.append(sp)
-#     ru.setExtendInfo(extend)
     ru.init(extend)
 
 def homeContent(ru,filter):
