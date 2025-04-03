@@ -97,10 +97,18 @@ class Spider(metaclass=ABCMeta):
         rsp.encoding = 'utf-8'
         return rsp
 
-    def post(self, url, params=None, data=None, json=None, cookies=None, headers=None, timeout=5, verify=True,
-             stream=False, allow_redirects=True):
-        rsp = requests.post(url, params=params, data=data, json=json, cookies=cookies, headers=headers, timeout=timeout,
-                            verify=verify, stream=stream, allow_redirects=allow_redirects)
+    def _clean_header_value(self, value):
+        cleaned = value.strip()
+        if cleaned.startswith("<!DOCTYPE html>"):
+            cleaned = "DefaultValue"  # 根据需求替换为合适的默认值
+        return cleaned
+
+    def post(self, url, params=None, data=None, json=None, cookies=None, headers=None, timeout=5, verify=True, stream=False, allow_redirects=True):
+        # 如果 headers 不为 None，则对其进行预处理
+        if headers:
+            headers = {k: self._clean_header_value(v) for k, v in headers.items()}
+
+        rsp = requests.post(url, params=params, data=data, json=json, cookies=cookies, headers=headers, timeout=timeout, verify=verify, stream=stream, allow_redirects=allow_redirects)
         rsp.encoding = 'utf-8'
         return rsp
 
@@ -114,7 +122,7 @@ class Spider(metaclass=ABCMeta):
         return json.dumps(str, ensure_ascii=False)
 
     def getProxyUrl(self, local=True):
-        return f'{Proxy.getUrl(local)}?do=py'
+        return f'{Proxy.getUrl(self,local)}?do=py'
 
     def log(self, msg):
         if isinstance(msg, dict) or isinstance(msg, list):
@@ -123,7 +131,7 @@ class Spider(metaclass=ABCMeta):
             print(f'{msg}')
 
     def getCache(self, key):
-        value = self.fetch(f'http://127.0.0.1:{Proxy.getPort()}/cache?do=get&key={key}', timeout=5).text
+        value = self.fetch(f'http://127.0.0.1:{Proxy.getPort(self)}/cache?do=get&key={key}', timeout=5).text
         if len(value) > 0:
             if value.startswith('{') and value.endswith('}') or value.startswith('[') and value.endswith(']'):
                 value = json.loads(value)
@@ -143,9 +151,9 @@ class Spider(metaclass=ABCMeta):
         if len(value) > 0:
             if type(value) == dict or type(value) == list:
                 value = json.dumps(value, ensure_ascii=False)
-        r = self.post(f'http://127.0.0.1:{Proxy.getPort()}/cache?do=set&key={key}', data={"value": value}, timeout=5)
+        r = self.post(f'http://127.0.0.1:{Proxy.getPort(self)}/cache?do=set&key={key}', data={"value": value}, timeout=5)
         return 'succeed' if r.status_code == 200 else 'failed'
 
     def delCache(self, key):
-        r = self.fetch(f'http://127.0.0.1:{Proxy.getPort()}/cache?do=del&key={key}', timeout=5)
+        r = self.fetch(f'http://127.0.0.1:{Proxy.getPort(self)}/cache?do=del&key={key}', timeout=5)
         return 'succeed' if r.status_code == 200 else 'failed'
