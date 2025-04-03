@@ -39,6 +39,11 @@ public class PythonSpider extends Spider {
         this.name = name;
     }
 
+    @Override
+    public void init(Context context) {
+        app.callAttr("init", pySpider);
+    }
+
     public void init(Context context, String url) {
         app = PythonLoader.getInstance().pyApp;
         PyObject retValue = app.callAttr("downloadPlugin", cachePath, url);
@@ -46,6 +51,7 @@ public class PythonSpider extends Spider {
         String extInfo = uri.getQueryParameter("extend");
         if (null == extInfo) extInfo = "";
         String path = retValue.toString();
+        Log.i("PyLoader", "echo-init path: " +path);
         File file = new File(path);
         if (file.exists()) {
             pySpider = app.callAttr("loadFromDisk", path);
@@ -53,8 +59,10 @@ public class PythonSpider extends Spider {
             List<PyObject> poList = app.callAttr("getDependence", pySpider).asList();
             for (PyObject po : poList) {
                 String api = po.toString();
+                Log.i("PyLoader", "echo-init api: " +api);
                 String depUrl = PythonLoader.getInstance().getUrlByApi(api);
                 if (!depUrl.isEmpty()) {
+                    Log.i("PyLoader", "echo-init depUrl: " +depUrl);
                     String tmpPath = app.callAttr("downloadPlugin", cachePath, depUrl).toString();
                     if (!new File(tmpPath).exists()) {
                         PyToast.showCancelableToast(api + "加载失败!");
