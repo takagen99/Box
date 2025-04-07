@@ -237,7 +237,7 @@ public class SourceViewModel extends ViewModel {
                     });
         } else if (type == 4) {
             String extend=sourceBean.getExt();
-            if(URLEncoder.encode(extend).length()>1000)extend="";
+            if(URLEncoder.encode(extend).length()>3000)extend="";
             OkGo.<String>get(sourceBean.getApi())
                     .tag(sourceBean.getKey() + "_sort")
                     .params("filter", "true")
@@ -547,7 +547,7 @@ public class SourceViewModel extends ViewModel {
             });
         } else if (type == 0 || type == 1 || type == 4) {
             String extend=sourceBean.getExt();
-            if(URLEncoder.encode(extend).length()>1000)extend="";
+            if(URLEncoder.encode(extend).length()>3000)extend="";
             OkGo.<String>get(sourceBean.getApi())
                     .tag("detail")
                     .params("ac", type == 0 ? "videolist" : "detail")
@@ -777,7 +777,7 @@ public class SourceViewModel extends ViewModel {
                 //直接就有
             } else if (type == 4) {
                 String extend=sourceBean.getExt();
-                if(URLEncoder.encode(extend).length()>1000)extend="";
+                if(URLEncoder.encode(extend).length()>3000)extend="";
                 okhttp3.Response response = OkGo.<String>get(sourceBean.getApi()).params("play", url).params("flag", playFlag).params("extend", extend).tag("play").execute();
                 String json = response.body().string();
                 result = new JSONObject(json);
@@ -809,7 +809,10 @@ public class SourceViewModel extends ViewModel {
         JsonArray kv = obj.getAsJsonArray("value");
         LinkedHashMap<String, String> values = new LinkedHashMap<>();
         for (JsonElement ele : kv) {
-            values.put(ele.getAsJsonObject().get("n").getAsString(), ele.getAsJsonObject().get("v").getAsString());
+            JsonObject ele_obj = ele.getAsJsonObject();
+            String values_key=ele_obj.has("n")?ele_obj.get("n").getAsString():"";
+            String values_value=ele_obj.has("v")?ele_obj.get("v").getAsString():"";
+            values.put(values_key, values_value);
         }
         MovieSort.SortFilter filter = new MovieSort.SortFilter();
         filter.key = key;
