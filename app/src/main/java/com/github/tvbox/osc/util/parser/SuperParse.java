@@ -3,6 +3,8 @@ package com.github.tvbox.osc.util.parser;
 import android.util.Base64;
 
 import com.github.catvod.crawler.SpiderDebug;
+import com.github.tvbox.osc.util.LOG;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -12,16 +14,12 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletionService;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 public class SuperParse {
     public static HashMap<String, ArrayList<String>> flagWebJx = new HashMap<>();
     static HashMap<String, ArrayList<String>> configs = null;
+    static LinkedHashMap<String, String> jsonJx = null;
+    static ArrayList<String> webJx = null;
 
     public static JSONObject parse(LinkedHashMap<String, HashMap<String, String>> jx, String flag, String url) {
         try {
@@ -62,10 +60,9 @@ public class SuperParse {
             }
 
             // 根据配置构建 jsonJx 和 webJx
-            LinkedHashMap<String, String> jsonJx = new LinkedHashMap<>();
-            ArrayList<String> webJx = new ArrayList<>();
+            jsonJx = new LinkedHashMap<>();
+            webJx = new ArrayList<>();
             List<String> targetKeys = configs.get(flag);
-
             if (targetKeys != null && !targetKeys.isEmpty()) {
                 for (String key : targetKeys) {
                     HashMap<String, String> parseBean = jx.get(key);
@@ -117,59 +114,32 @@ public class SuperParse {
             if (!webJx.isEmpty()) {
                 flagWebJx.put(flag, webJx);
             }
-            //同时进行json和web
-            ExecutorService exec = Executors.newFixedThreadPool(2);
-            CompletionService<JSONObject> cs = new ExecutorCompletionService<>(exec);
-            List<Future<JSONObject>> tasks = new ArrayList<>();
 
-            tasks.add(cs.submit(new Callable<JSONObject>() {
-                @Override
-                public JSONObject call() {
-                    return JsonParallel.parse(jsonJx, url);
-                }
-            }));
             if (!webJx.isEmpty()) {
-                tasks.add(cs.submit(new Callable<JSONObject>() {
-                    @Override
-                    public JSONObject call() {
-                        JSONObject webResult = new JSONObject();
-                        String encodedUrl = Base64.encodeToString(url.getBytes(),
-                                Base64.DEFAULT | Base64.URL_SAFE | Base64.NO_WRAP);
-                        try {
-                            webResult.put("url", "proxy://go=SuperParse&flag=" + flag + "&url=" + encodedUrl);
-                            webResult.put("parse", 1);
-                            webResult.put("ua", Utils.UaWinChrome);
-                        } catch (Exception e) {
-                            SpiderDebug.log(e);
-                        }
-                        return webResult;
-                    }
-                }));
-            }
-            JSONObject result = null;
-            for (int i = 0, n = tasks.size(); i < n; i++) {
-                try {
-                    Future<JSONObject> future = cs.take();
-                    JSONObject res = future.get();
-                    if (res != null && res.has("url")) {
-                        result = res;
-                        break;
-                    }
-                } catch (Exception e) {
-                    SpiderDebug.log(e);
-                }
-            }
-            for (Future<JSONObject> future : tasks) {
-                future.cancel(true);
-            }
-            exec.shutdownNow();
-            if (result != null) {
-                return result;
+                JSONObject webResult = new JSONObject();
+                webResult.put("url", "proxy://go=SuperParse&flag=" + flag + "&url=" + Base64.encodeToString(url.getBytes(), Base64.DEFAULT | Base64.URL_SAFE | Base64.NO_WRAP));
+                webResult.put("parse", 1);
+                webResult.put("ua", Utils.UaWinChrome);
+                return webResult;
             }
         } catch (Exception e) {
-            SpiderDebug.log(e);
+            LOG.i("echo-result"+e.getMessage());
         }
         return new JSONObject();
+    }
+
+    public static JSONObject doJsonJx(LinkedHashMap<String, String>json_jxs,String url){
+        LOG.i("echo-jsonJx1"+json_jxs.toString());
+        return JsonParallel.parse(json_jxs, url);
+    }
+
+    public static JSONObject doJsonJx(String url){
+        LOG.i("echo-jsonJx2"+jsonJx.toString());
+        return JsonParallel.parse(jsonJx, url);
+    }
+
+    public static void stopJsonJx(){
+        JsonParallel.cancelTasks();
     }
 
     private static String mixUrl(String url, String ext) {

@@ -108,7 +108,10 @@ public class FileUtils {
             os.close();
         }
     }
-
+    public static String getRootPath() {
+        return Environment.getExternalStorageDirectory()
+            .getAbsolutePath();
+    }
     public static void recursiveDelete(File file) {
         try {
             if (!file.exists())

@@ -213,8 +213,9 @@ public class DefaultConfig {
 
     public static String safeJsonString(JsonObject obj, String key, String defaultVal) {
         try {
-            if (obj.has(key))
-                return obj.getAsJsonPrimitive(key).getAsString().trim();
+            if (obj.has(key)){
+                return obj.get(key).isJsonObject() || obj.get(key).isJsonArray()?obj.get(key).toString().trim():obj.getAsJsonPrimitive(key).getAsString().trim();
+            }
             else
                 return defaultVal;
         } catch (Throwable th) {

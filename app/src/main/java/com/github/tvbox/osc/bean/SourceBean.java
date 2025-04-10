@@ -17,7 +17,7 @@ public class SourceBean {
     private ArrayList<String> categories = null; // 分类&排序
     private int playerType; // 0 system 1 ikj 2 exo 10 mxplayer -1 以参数设置页面的为准
     private String clickSelector; // 需要点击播放的嗅探站点selector   ddrk.me;#id
-
+    private String style; // 展示风格
     public String getKey() {
         return key;
     }
@@ -128,5 +128,13 @@ public class SourceBean {
 
     public void setClickSelector(String clickSelector) {
         this.clickSelector = clickSelector;
+    }
+
+    public String getStyle() { 
+        return style; 
+    }
+
+    public void setStyle(String style) { 
+        this.style = style; 
     }
 }

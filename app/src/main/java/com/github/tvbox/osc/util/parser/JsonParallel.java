@@ -25,14 +25,17 @@ import okhttp3.Response;
  */
 public class JsonParallel {
 
+    private static OkHttpClient client;
+    private static ExecutorService executorService;
+    private static final List<Future<JSONObject>> futures = new ArrayList<>();
     public static JSONObject parse(LinkedHashMap<String, String> jx, String url) {
         try {
             if (jx != null && jx.size() > 0) {
-                OkHttpClient client = new OkHttpClient();
-                // 使用线程池并发处理各个任务
-                ExecutorService executorService = Executors.newFixedThreadPool(6);
+                client = new OkHttpClient();
+                // 使用线程池并发处理任务
+                executorService = Executors.newFixedThreadPool(5);
                 CompletionService<JSONObject> completionService = new ExecutorCompletionService<>(executorService);
-                List<Future<JSONObject>> futures = new ArrayList<>();
+                futures.clear();
 
                 // 遍历所有的解析配置
                 for (final String jxName : jx.keySet()) {
@@ -45,7 +48,6 @@ public class JsonParallel {
                                 HashMap<String, String> reqHeaders = JsonParallel.getReqHeader(parseUrl);
                                 String realUrl = reqHeaders.get("url");
                                 reqHeaders.remove("url");
-                                SpiderDebug.log(realUrl + url);
                                 Headers headers = Headers.of(reqHeaders);
                                 Request request = new Request.Builder()
                                         .url(realUrl + url)
@@ -59,10 +61,9 @@ public class JsonParallel {
 
                                 JSONObject taskResult = Utils.jsonParse(url, json);
                                 taskResult.put("jxFrom", jxName);
-                                SpiderDebug.log(taskResult.toString());
                                 return taskResult;
                             } catch (Throwable th) {
-                                SpiderDebug.log(th);
+                                // 输出日志
                                 return null;
                             }
                         }
@@ -100,6 +101,23 @@ public class JsonParallel {
         return new JSONObject();
     }
 
+    public static void cancelTasks() {
+        if (client != null) {
+            client.dispatcher().cancelAll();
+        }
+        if (futures != null) {
+            for (Future<JSONObject> future : futures) {
+                try {
+                    future.cancel(true);
+                } catch (Throwable t) {
+                }
+            }
+            futures.clear();
+        }
+        if (executorService != null) {
+            executorService.shutdownNow();
+        }
+    }
     public static HashMap<String, String> getReqHeader(String url) {
         HashMap<String, String> reqHeaders = new HashMap<>();
         reqHeaders.put("url", url);

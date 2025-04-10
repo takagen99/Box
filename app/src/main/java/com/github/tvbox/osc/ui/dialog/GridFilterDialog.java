@@ -1,8 +1,12 @@
 package com.github.tvbox.osc.ui.dialog;
 
+import android.app.UiModeManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.TypedArray;
+import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.os.Build;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,14 +29,31 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 public class GridFilterDialog extends BaseDialog {
-    private LinearLayout filterRoot;
+    public LinearLayout filterRoot;
 
     public GridFilterDialog(@NonNull @NotNull Context context) {
         super(context);
-        setCanceledOnTouchOutside(true);
+        setCanceledOnTouchOutside(false);
         setCancelable(true);
         setContentView(R.layout.dialog_grid_filter);
         filterRoot = findViewById(R.id.filterRoot);
+        UiModeManager uiModeManager = (UiModeManager) context.getSystemService(Context.UI_MODE_SERVICE);
+        // 检查是否为电视设备
+        boolean isTv = uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION
+                || context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_TELEVISION)
+                || !context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            isTv=isTv || context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_LEANBACK);
+        }
+        if(!isTv){
+            View rootView = findViewById(R.id.root);
+            rootView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dismiss();
+                }
+            });
+        }
     }
 
     public interface Callback {
@@ -107,7 +128,7 @@ public class GridFilterDialog extends BaseDialog {
         WindowManager.LayoutParams layoutParams = getWindow().getAttributes();
         layoutParams.gravity = Gravity.BOTTOM;
         layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
-        layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
         // layoutParams.dimAmount = 0f;
         getWindow().getDecorView().setPadding(0, 0, 0, 0);
         getWindow().setAttributes(layoutParams);

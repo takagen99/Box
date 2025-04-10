@@ -17,7 +17,7 @@ import com.github.tvbox.osc.util.ImgUtil;
 import com.orhanobut.hawk.Hawk;
 
 import java.util.ArrayList;
-
+import me.jessyan.autosize.utils.AutoSizeUtils;
 public class SearchAdapter extends BaseQuickAdapter<Movie.Video, BaseViewHolder> {
     private int searchWidth;
 
@@ -51,7 +51,7 @@ public class SearchAdapter extends BaseQuickAdapter<Movie.Video, BaseViewHolder>
             ImageView ivThumb = helper.getView(R.id.ivThumb);
             if (!TextUtils.isEmpty(item.pic)) {
                 // takagen99 : Use Glide instead
-                ImgUtil.load(item.pic, ivThumb, (int) App.getInstance().getResources().getDimension(R.dimen.vs_5));
+                ImgUtil.load(item.pic, ivThumb, (int) App.getInstance().getResources().getDimension(R.dimen.vs_5),AutoSizeUtils.mm2px(mContext, ImgUtil.defaultWidth), AutoSizeUtils.mm2px(mContext, ImgUtil.defaultHeight));
             } else {
                 ivThumb.setImageResource(R.drawable.img_loading_placeholder);
             }

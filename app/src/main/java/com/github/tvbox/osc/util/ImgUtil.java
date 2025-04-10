@@ -20,16 +20,72 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.github.tvbox.osc.R;
+import com.github.tvbox.osc.api.ApiConfig;
 import com.github.tvbox.osc.base.App;
 import com.google.common.net.HttpHeaders;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 
 public class ImgUtil {
+    public static int defaultWidth = 244;
+    public static int defaultHeight = 320;
+
+    /**
+     * style 数据结构：ratio 指定宽高比（宽 / 高），type 表示风格（例如 rect、list）
+     */
+    public static class Style {
+        public float ratio;
+        public String type;
+
+        public Style(float ratio, String type) {
+            this.ratio = ratio;
+            this.type = type;
+        }
+    }
+
+    public static Style initStyle() {
+        String bStyle = ApiConfig.get().getHomeSourceBean().getStyle();
+        if(!bStyle.isEmpty()){
+            try {
+                JSONObject jsonObject = new JSONObject(bStyle);
+                float ratio = (float) jsonObject.getDouble("ratio");
+                String type = jsonObject.getString("type");
+                return new Style(ratio, type);
+            }catch (JSONException e){
+
+            }
+        }
+        return null;
+    }
+
+    public static int spanCountByStyle(Style style,int defaultCount){
+        int spanCount=defaultCount;
+        if ("rect".equals(style.type)) {
+            if (style.ratio >= 1.7) {
+                spanCount = 3; // 横图
+            } else if (style.ratio >= 1.3) {
+                spanCount = 4; // 4:3
+            }
+        } else if ("list".equals(style.type)) {
+            spanCount = 1;
+        }
+        return spanCount;
+    }
+
+    public static int getStyleDefaultWidth(Style style){
+        int styleDefaultWidth = 280;
+        if(style.ratio<1)styleDefaultWidth=214;
+        if(style.ratio>1.7)styleDefaultWidth=380;
+        return styleDefaultWidth;
+    }
 //    public static void load(String url, ImageView view) {
 //        load(url, view, 10);
 //    }
@@ -60,8 +116,11 @@ public class ImgUtil {
 //                .into(view);
 //        }
 //    }
-
     public static void load(String url, ImageView view, int roundingRadius) {
+        load(url, view, roundingRadius,0,0);
+    }
+
+    public static void load(String url, ImageView view, int roundingRadius, int newWidth, int newHeight) {
         view.setScaleType(ImageView.ScaleType.CENTER);
         if (TextUtils.isEmpty(url)) {
             view.setImageResource(R.drawable.img_loading_placeholder);
@@ -71,9 +130,10 @@ public class ImgUtil {
                 .format(DecodeFormat.PREFER_RGB_565)
                 .diskCacheStrategy(getDiskCacheStrategy(4))
                 .dontAnimate()
-                .transform(
-            new CenterCrop(),
-            new RoundedCorners(roundingRadius));
+                .transform(new CenterCrop(), new RoundedCorners(roundingRadius));
+            if (newWidth > 0 && newHeight > 0) {
+                requestOptions = requestOptions.override(newWidth, newHeight);
+            }
             Glide.with(App.getInstance())
                 .asBitmap()
                 .load(getUrl(url))

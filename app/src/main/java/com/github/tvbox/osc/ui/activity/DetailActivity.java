@@ -1247,7 +1247,8 @@ public class DetailActivity extends BaseActivity {
                 seriesFlagFocus.requestFocus();
                 return;
             }
-        } else if (showPreview) {
+        } else if (showPreview && playFragment != null) {
+            playFragment.setPlayTitle(false);
             playFragment.mVideoView.release();
         }
         super.onBackPressed();
