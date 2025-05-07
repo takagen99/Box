@@ -1,16 +1,15 @@
 package com.github.tvbox.osc.bean;
 
+import static com.github.tvbox.osc.util.RegexUtils.getPattern;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
-import com.github.tvbox.osc.api.ApiConfig;
 import com.google.gson.Gson;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
@@ -101,7 +100,7 @@ public class VodInfo implements Serializable {
     }
 
     private int extractNumber(String name) {
-        java.util.regex.Matcher matcher = java.util.regex.Pattern.compile("\\d+").matcher(name);
+        java.util.regex.Matcher matcher = getPattern("\\d+").matcher(name);
         if (matcher.find()) {
             return Integer.parseInt(matcher.group());
         }
