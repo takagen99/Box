@@ -1723,7 +1723,7 @@ public class PlayFragment extends BaseLazyFragment {
                 XWalkUtils.tryUseXWalk(mContext, new XWalkUtils.XWalkState() {
                     @Override
                     public void success() {
-                        initWebView(!sourceBean.getClickSelector().isEmpty());
+                        initWebView(false);
                         loadUrl(url);
                     }
 
@@ -1975,29 +1975,9 @@ public class PlayFragment extends BaseLazyFragment {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-            String clickSelector = sourceBean.getClickSelector().trim();
             LOG.i("echo-onPageFinished url:" + url);
-            if (!clickSelector.isEmpty()) {
-                String selector;
-                if (clickSelector.contains(";") && !clickSelector.endsWith(";")) {
-                    String[] parts = clickSelector.split(";", 2);
-                    if (!url.contains(parts[0])) {
-                        return;
-                    }
-                    selector = parts[1].trim();
-                } else {
-                    selector = clickSelector.trim();
-                }
-//                selector="document.getElementById('playleft').children[0].contentWindow.document.getElementById('start')";
-                // 构造点击的 JS 代码
-                String js = selector;
-                if(!selector.contains("click()"))js+=".click();";
-                LOG.i("echo-javascript:" + js);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    view.evaluateJavascript(js, null);
-                } else {
-                    view.loadUrl("javascript:" + js);
-                }
+            if(!url.equals("about:blank")){
+                mController.evaluateScript(sourceBean,url,view,null);
             }
             mHandler.sendEmptyMessage(200);
         }
@@ -2164,6 +2144,10 @@ public class PlayFragment extends BaseLazyFragment {
         @Override
         public void onLoadFinished(XWalkView view, String url) {
             super.onLoadFinished(view, url);
+            LOG.i("echo-onLoadFinished url:" + url);
+            if(!url.equals("about:blank")){
+                mController.evaluateScript(sourceBean,url,null,view);
+            }
         }
 
         @Override
