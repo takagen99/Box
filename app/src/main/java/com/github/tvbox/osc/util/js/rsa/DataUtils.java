@@ -1,4 +1,4 @@
-package com.github.tvbox.osc.util.rsa;
+package com.github.tvbox.osc.util.js.rsa;
 
 import android.util.Base64;
 

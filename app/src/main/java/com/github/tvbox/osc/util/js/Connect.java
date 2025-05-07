@@ -46,7 +46,7 @@ public class Connect {
                 for (byte aByte : res.body().bytes()) array.push((int) aByte);
                 jsObject.set("content", array);
             }
-            if (req.getBuffer() == 2) jsObject.set("content", Base64.encodeToString(res.body().bytes(), Base64.DEFAULT));
+            if (req.getBuffer() == 2) jsObject.set("content", Base64.encodeToString(res.body().bytes(), Base64.DEFAULT | Base64.NO_WRAP));
             return jsObject;
         } catch (Exception e) {
             return error(ctx);

@@ -11,9 +11,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -49,7 +46,7 @@ public class HtmlParser {
     public static class Painfo {
         public String nparse_rule;
         public int nparse_index;
-        public List < String > excludes;
+        public List<String> excludes;
     }
 
     private static Painfo getParseInfo(String nparse) {
@@ -67,26 +64,26 @@ public class HtmlParser {
 
             if (painfo.nparse_rule.contains("--")) {
                 String[] rules = painfo.nparse_rule.split("--");
-                painfo.excludes = new ArrayList < > (Arrays.asList(rules));
+                painfo.excludes = new ArrayList<>(Arrays.asList(rules));
                 painfo.excludes.remove(0);
                 painfo.nparse_rule = rules[0];
             } else if (nparse_pos.contains("--")) {
                 String[] rules = nparse_pos.split("--");
-                painfo.excludes = new ArrayList < > (Arrays.asList(rules));
+                painfo.excludes = new ArrayList<>(Arrays.asList(rules));
                 painfo.excludes.remove(0);
                 nparse_pos = rules[0];
             }
 
             try {
                 painfo.nparse_index = Integer.parseInt(nparse_pos.replace("eq(", "")
-                    .replace(")", ""));
+				.replace(")", ""));
             } catch (Exception e1) {
                 painfo.nparse_index = 0;
             }
         } else {
             if (nparse.contains("--")) {
                 String[] rules = painfo.nparse_rule.split("--");
-                painfo.excludes = new ArrayList < > (Arrays.asList(rules));
+                painfo.excludes = new ArrayList<>(Arrays.asList(rules));
                 painfo.excludes.remove(0);
                 painfo.nparse_rule = rules[0];
             }
@@ -98,7 +95,7 @@ public class HtmlParser {
         if (StringUtils.isEmpty(str)) {
             return false;
         }
-        for (String str2: new String[] {
+        for (String str2 : new String[]{
             ":eq", ":lt", ":gt", ":first", ":last", "body", "#"
         }) {
             if (str.contains(str2)) {
@@ -115,9 +112,10 @@ public class HtmlParser {
         if (StringUtils.isEmpty(str)) {
             return false;
         }
-        for (String str2: new String[] {
+        for (String str2 : new String[]{
             "url", "src", "href", "-original", "-play"
-        }) {
+		}) {
+
             if (str.contains(str2)) {
                 return true;
             }
@@ -179,14 +177,14 @@ public class HtmlParser {
         if (rule.contains("&&")) {
             String[] rs = rule.split("&&");
             option = rs[rs.length - 1];
-            List < String > excludes = new ArrayList < > (Arrays.asList(rs));
+            List<String> excludes = new ArrayList<>(Arrays.asList(rs));
             excludes.remove(rs.length - 1);
             rule = TextUtils.join("&&", excludes);
         }
         rule = parseHikerToJq(rule, true);
         String[] parses = rule.split(" ");
         Elements ret = new Elements();
-        for (String nparse: parses) {
+        for (String nparse : parses) {
             ret = parseOneRule(doc, nparse, ret);
             if (ret.isEmpty()) {
                 return "";
@@ -207,7 +205,6 @@ public class HtmlParser {
                         result = m.group(1);
                     }
                     if (StringUtils.isNotEmpty(result)) {
-                        // 2023/07/28新增 style取内部链接自动去除首尾单双引号
                         result = result.replaceAll("^['|\"](.*)['|\"]$", "$1");
                     }
                 }

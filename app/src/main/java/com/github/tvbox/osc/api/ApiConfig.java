@@ -735,16 +735,12 @@ public class ApiConfig {
     }
 	
     public Object[] proxyLocal(Map<String,String> param) {
-        SourceBean sourceBean = ApiConfig.get().getHomeSourceBean(); 
         if ("js".equals(param.get("do"))) {
             return jsLoader.proxyInvoke(param);
-        }else {
-            if (sourceBean.getApi().contains(".py")) {
-                return pyLoader.proxyInvoke(param);
-            }else {
-                return jarLoader.proxyInvoke(param);
-            }
-	}
+        }
+        SourceBean sourceBean = ApiConfig.get().getHomeSourceBean(); 
+        String apiString = sourceBean.getApi();
+        return apiString.contains(".py") ? pyLoader.proxyInvoke(param) : jarLoader.proxyInvoke(param);
     }
 
     public JSONObject jsonExt(String key, LinkedHashMap<String, String> jxs, String url) {
@@ -875,6 +871,7 @@ public class ApiConfig {
     public void clearLoader(){
         jarLoader.clear();
         pyLoader.clear();
+        jsLoader.clear();
     }
     String miTV(String url) {
         if (url.startsWith("p") || url.startsWith("mitv")) {

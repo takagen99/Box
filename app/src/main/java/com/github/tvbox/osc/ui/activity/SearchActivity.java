@@ -819,7 +819,7 @@ public class SearchActivity extends BaseActivity {
             if (sourceViewModel != null) {
                 sourceViewModel.shutdownNow();
                 sourceViewModel.destroyExecutor();
-                JsLoader.load();
+                JsLoader.stopAll();
             }
         } catch (Throwable th) {
             th.printStackTrace();
