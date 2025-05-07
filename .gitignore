@@ -1,3 +1,6 @@
+# windows thumbnail cache
+Thumbs.db
+
 # Built application files
 *.apk
 *.aar
@@ -47,6 +50,7 @@ captures/
 .idea/assetWizardSettings.xml
 .idea/dictionaries
 .idea/libraries
+.idea/shelf
 # Android Studio 3 in .gitignore file.
 .idea/caches
 .idea/modules.xml
@@ -89,3 +93,9 @@ lint/tmp/
 /LTDecodeSpace
 /adb.exe
 /LTDecodeNew3.exe
+
+# macOS
+.DS_Store
+
+*.hprof
+output-metadata.json
