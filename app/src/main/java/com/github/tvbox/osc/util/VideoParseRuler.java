@@ -1,5 +1,6 @@
 package com.github.tvbox.osc.util;
 
+import static com.github.tvbox.osc.util.RegexUtils.getPattern;
 import android.net.Uri;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -89,7 +90,7 @@ public class VideoParseRuler {
                 boolean checkIsVideo = true;
                 if (hostRules.get(i) != null && hostRules.get(i).size() > 0) {
                     for(int j=0; j<hostRules.get(i).size(); j++) {
-                        Pattern onePattern = Pattern.compile("" + hostRules.get(i).get(j));
+                        Pattern onePattern = getPattern("" + hostRules.get(i).get(j));
                         if (!onePattern.matcher(url).find()) {
                             checkIsVideo = false;
                             break;
@@ -136,7 +137,7 @@ public class VideoParseRuler {
                 boolean checkIsFilter = true;
                 if (hostFilters.get(i) != null && hostFilters.get(i).size() > 0) {
                     for(int j=0; j<hostFilters.get(i).size(); j++) {
-                        Pattern onePattern = Pattern.compile("" + hostFilters.get(i).get(j));
+                        Pattern onePattern = getPattern("" + hostFilters.get(i).get(j));
                         if (!onePattern.matcher(url).find()) {
                             checkIsFilter = false;
                             break;
