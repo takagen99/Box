@@ -1,5 +1,6 @@
 package com.github.tvbox.osc.server;
 
+import static com.github.tvbox.osc.util.RegexUtils.getPattern;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.wifi.WifiManager;
@@ -193,7 +194,7 @@ public class RemoteServer extends NanoHTTPD {
                         if (hd != null) {
                             // cuke: 修正中文乱码问题
                             if (hd.toLowerCase().contains("multipart/form-data") && !hd.toLowerCase().contains("charset=")) {
-                                Matcher matcher = Pattern.compile("[ |\t]*(boundary[ |\t]*=[ |\t]*['|\"]?[^\"^'^;^,]*['|\"]?)", Pattern.CASE_INSENSITIVE).matcher(hd);
+                                Matcher matcher = getPattern("[ |\t]*(boundary[ |\t]*=[ |\t]*['|\"]?[^\"^'^;^,]*['|\"]?)", Pattern.CASE_INSENSITIVE).matcher(hd);
                                 String boundary = matcher.find() ? matcher.group(1) : null;
                                 if (boundary != null) {
                                     session.getHeaders().put("content-type", "multipart/form-data; charset=utf-8; " + boundary);
