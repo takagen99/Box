@@ -8,6 +8,9 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.view.Gravity;
+import android.view.InputDevice;
+import android.view.KeyCharacterMap;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,15 +40,7 @@ public class GridFilterDialog extends BaseDialog {
         setCancelable(true);
         setContentView(R.layout.dialog_grid_filter);
         filterRoot = findViewById(R.id.filterRoot);
-        UiModeManager uiModeManager = (UiModeManager) context.getSystemService(Context.UI_MODE_SERVICE);
-        // 检查是否为电视设备
-        boolean isTv = uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION
-                || context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_TELEVISION)
-                || !context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-            isTv=isTv || context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_LEANBACK);
-        }
-        if(!isTv){
+        if(!isTvOrBox(context)){
             View rootView = findViewById(R.id.root);
             rootView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -133,4 +128,45 @@ public class GridFilterDialog extends BaseDialog {
         getWindow().getDecorView().setPadding(0, 0, 0, 0);
         getWindow().setAttributes(layoutParams);
     }
+    public static boolean isTvOrBox(Context context) {
+        // 1. UiMode 判断
+        UiModeManager uiMode = (UiModeManager) context.getSystemService(Context.UI_MODE_SERVICE);
+        if (uiMode.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION) {
+            return true;
+        }
+        // 2. Android TV / Leanback 特性判断
+        PackageManager pm = context.getPackageManager();
+        if (pm.hasSystemFeature(PackageManager.FEATURE_LEANBACK)
+                || pm.hasSystemFeature("android.software.leanback_only")   // Strict leanback
+                || pm.hasSystemFeature(PackageManager.FEATURE_TELEVISION)
+                // Amazon Fire TV
+                || pm.hasSystemFeature("amazon.hardware.fire_tv")
+                // Google TV (part of Android TV 家族)
+                || pm.hasSystemFeature("com.google.android.tv")) {
+            return true;
+        }
+        // 3. 没有触摸屏：大多数机顶盒、电视不带触摸
+        if (!pm.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN)) {
+            return true;
+        }
+        // 4. 物理遥控器 / D‑pad 键存在判断 兼容一些既有触摸也支持遥控的设备
+        if (KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_DPAD_UP)
+                && KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_DPAD_DOWN)
+                && KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_DPAD_LEFT)
+                && KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_DPAD_RIGHT)
+                && KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_DPAD_CENTER)) {
+            return true;
+        }
+        // 5. 输入设备源中有 DPAD
+        int[] deviceIds = InputDevice.getDeviceIds();
+        for (int id : deviceIds) {
+            InputDevice dev = InputDevice.getDevice(id);
+            if (dev == null) continue;
+            int sources = dev.getSources();
+            if ((sources & InputDevice.SOURCE_DPAD) == InputDevice.SOURCE_DPAD) {
+                return true;
+            }
+        }
+        return false;
+    }   
 }
