@@ -112,7 +112,12 @@ public class GridFragment extends BaseLazyFragment {
         outState.putString("sortDataJson", GsonUtils.toJson(sortData));        
     }
 
-    private void changeView(String id) {
+    private void changeView(String id,Boolean isFolder){
+        if(isFolder){
+            this.sortData.flag =style==null?"1":"2"; // 修改sortData.flag
+        }else {
+            this.sortData.flag ="2"; // 修改sortData.flag
+        }
         initView();
         this.sortData.id = id; // 修改sortData.id为新的ID
         initViewModel();
@@ -125,7 +130,7 @@ public class GridFragment extends BaseLazyFragment {
 
     // 获取当前页面UI的显示模式 ‘0’ 正常模式 '1' 文件夹模式 '2' 显示缩略图的文件夹模式
     public char getUITag() {
-        return (sortData.flag == null || sortData.flag.length() == 0) ? '0' : sortData.flag.charAt(0);
+        return (sortData == null || sortData.flag == null || sortData.flag.length() == 0) ? '0' : sortData.flag.charAt(0);
     }
 
     // 是否允许聚合搜索 sortData.flag的第二个字符为‘1’时允许聚搜
@@ -165,6 +170,7 @@ public class GridFragment extends BaseLazyFragment {
         return true;
     }
 
+    private ImgUtil.Style style;
     // 更改当前页面
     private void createView() {
         this.saveCurrentView(); // 保存当前页面
@@ -182,7 +188,8 @@ public class GridFragment extends BaseLazyFragment {
             mGridView.setVisibility(View.VISIBLE);
         }
         mGridView.setHasFixedSize(true);
-        gridAdapter = new GridAdapter(isFolederMode());
+        style=ImgUtil.initStyle();
+        gridAdapter = new GridAdapter(isFolederMode(), style);
         this.page = 1;
         this.maxPage = 1;
         this.isLoad = false;
@@ -194,7 +201,15 @@ public class GridFragment extends BaseLazyFragment {
         if (isFolederMode()) {
             mGridView.setLayoutManager(new V7LinearLayoutManager(this.mContext, 1, false));
         } else {
-            mGridView.setLayoutManager(new V7GridLayoutManager(this.mContext, isBaseOnWidth() ? 5 : 6));
+            int spanCount = isBaseOnWidth() ? 5 : 6;
+            if (style != null) {
+                spanCount = ImgUtil.spanCountByStyle(style, spanCount);
+            }
+            if (spanCount == 1) {
+                mGridView.setLayoutManager(new V7LinearLayoutManager(mContext, spanCount, false));
+            } else {
+                mGridView.setLayoutManager(new V7GridLayoutManager(mContext, spanCount));
+            }
         }
 
         gridAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {

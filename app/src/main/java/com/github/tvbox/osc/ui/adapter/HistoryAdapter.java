@@ -16,7 +16,7 @@ import com.github.tvbox.osc.util.HawkConfig;
 import com.github.tvbox.osc.util.ImgUtil;
 
 import java.util.ArrayList;
-
+import me.jessyan.autosize.utils.AutoSizeUtils;
 /**
  * @author pj567
  * @date :2020/12/21

@@ -377,6 +377,7 @@ public class VodController extends BaseController {
 
         // center back button
         mBack = findViewById(R.id.tvBackButton);
+        mDanmuSetting = findViewById(R.id.ll_danmu_setting);
 
         // center lock button
         mLockView = findViewById(R.id.tv_lock);
