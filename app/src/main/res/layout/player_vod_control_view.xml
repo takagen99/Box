@@ -734,7 +734,7 @@
                 android:shadowDx="0"
                 android:shadowDy="0"
                 android:shadowRadius="3"
-                android:text="Ends at 00:00 AM"
+                android:text="计算中..."
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/vs_20"
                 android:textStyle="normal"

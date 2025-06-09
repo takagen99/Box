@@ -20,7 +20,6 @@ import com.github.tvbox.osc.ui.adapter.HomeHotVodAdapter;
 import com.github.tvbox.osc.util.FastClickCheckUtil;
 import com.github.tvbox.osc.util.HawkConfig;
 import com.github.tvbox.osc.util.UA;
-import com.github.tvbox.osc.util.ImgUtil;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -108,7 +107,7 @@ public class UserFragment extends BaseLazyFragment implements View.OnClickListen
     protected int getLayoutResID() {
         return R.layout.fragment_user;
     }
-    private ImgUtil.Style style;
+
     @Override
     protected void init() {
         EventBus.getDefault().register(this);
@@ -136,21 +135,8 @@ public class UserFragment extends BaseLazyFragment implements View.OnClickListen
         tvHotListForLine = findViewById(R.id.tvHotListForLine);
         tvHotListForGrid = findViewById(R.id.tvHotListForGrid);
         tvHotListForGrid.setHasFixedSize(true);
-        int spanCount = 5;
-        if (Hawk.get(HawkConfig.HOME_REC, 0) == 1 && homeSourceRec!=null) {
-            style=ImgUtil.initStyle();
-        }
-        if(style!=null && Hawk.get(HawkConfig.HOME_REC, 0) == 1) {
-            spanCount=ImgUtil.spanCountByStyle(style,spanCount);
-        }
-        tvHotListForGrid.setLayoutManager(new V7GridLayoutManager(this.mContext, spanCount)); 
-        String tvRate="";
-        if(Hawk.get(HawkConfig.HOME_REC, 0) == 0){
-            tvRate="豆瓣热播";
-        }else if(Hawk.get(HawkConfig.HOME_REC, 0) == 1){
-          tvRate= homeSourceRec != null ? "站点推荐" : "豆瓣热播";
-        }
-        homeHotVodAdapter = new HomeHotVodAdapter(style,tvRate);
+        tvHotListForGrid.setLayoutManager(new V7GridLayoutManager(this.mContext, 5));
+        homeHotVodAdapter = new HomeHotVodAdapter();
         homeHotVodAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
