@@ -112,12 +112,7 @@ public class GridFragment extends BaseLazyFragment {
         outState.putString("sortDataJson", GsonUtils.toJson(sortData));        
     }
 
-    private void changeView(String id,Boolean isFolder){
-        if(isFolder){
-            this.sortData.flag =style==null?"1":"2"; // 修改sortData.flag
-        }else {
-            this.sortData.flag ="2"; // 修改sortData.flag
-        }
+    private void changeView(String id) {
         initView();
         this.sortData.id = id; // 修改sortData.id为新的ID
         initViewModel();
