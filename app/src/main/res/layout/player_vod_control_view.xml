@@ -734,7 +734,7 @@
                 android:shadowDx="0"
                 android:shadowDy="0"
                 android:shadowRadius="3"
-                android:text="计算中..."
+                android:text=""<!--影片结束-->
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/vs_20"
                 android:textStyle="normal"
