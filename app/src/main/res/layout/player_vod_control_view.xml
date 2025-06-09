@@ -734,12 +734,12 @@
                 android:shadowDx="0"
                 android:shadowDy="0"
                 android:shadowRadius="3"
-		<!--影片结束-->
                 android:text=""
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/vs_20"
                 android:textStyle="normal"
-                android:visibility="visible" />
+                android:visibility="visible" /> <!-- android:text="" 影片结束-->
+		
         </LinearLayout>
 
         <LinearLayout
