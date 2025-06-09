@@ -125,7 +125,7 @@ public class GridFragment extends BaseLazyFragment {
 
     // 获取当前页面UI的显示模式 ‘0’ 正常模式 '1' 文件夹模式 '2' 显示缩略图的文件夹模式
     public char getUITag() {
-        return (sortData == null || sortData.flag == null || sortData.flag.length() == 0) ? '0' : sortData.flag.charAt(0);
+        return (sortData.flag == null || sortData.flag.length() == 0) ? '0' : sortData.flag.charAt(0);
     }
 
     // 是否允许聚合搜索 sortData.flag的第二个字符为‘1’时允许聚搜
