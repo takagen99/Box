@@ -1061,27 +1061,6 @@
 	                    android:layout_gravity="center"
 	                    android:src="@drawable/v_subtitle" />
 	            </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/ll_danmu_setting"
-                    android:layout_width="@dimen/vs_60"
-                    android:layout_height="@dimen/vs_60"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="@dimen/vs_6"
-                    android:layout_marginLeft="@dimen/vs_6"
-                    android:layout_marginEnd="@dimen/vs_6"
-                    android:layout_marginRight="@dimen/vs_6"
-                    android:background="@drawable/button_dialog_vod"
-                    android:focusable="true"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="@dimen/vs_35"
-                        android:layout_height="@dimen/vs_35"
-                        android:layout_gravity="center"
-                        android:src="@drawable/v_danmu" />
-                </LinearLayout>
 	
 	            <LinearLayout
 	                android:id="@+id/play_audio"

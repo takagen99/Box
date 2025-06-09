@@ -215,24 +215,6 @@ public class SearchActivity extends BaseActivity {
         mGridViewWord.setLayoutManager(new V7LinearLayoutManager(this.mContext, 1, false));
         wordAdapter = new PinyinAdapter();
         mGridViewWord.setAdapter(wordAdapter);
-        searchResultWidth = Hawk.get(HawkConfig.SEARCH_RESULT_WIDTH, -1);
-        llLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                if (searchResultWidth != -1) {
-                    return;
-                }
-                int width = mGridView.getWidth();
-                if (width != 0) {
-                    // 计算item的宽度
-                    searchResultWidth = (width - 3 * (int) (App.getInstance().getResources().getDimension(R.dimen.vs_5))) / 4;
-                    Hawk.put(HawkConfig.SEARCH_RESULT_WIDTH, searchResultWidth);
-                    if (searchAdapter != null) {
-                        searchAdapter.notifyDataSetChanged();
-                    }
-                }
-            }
-        });
 
         wordAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override

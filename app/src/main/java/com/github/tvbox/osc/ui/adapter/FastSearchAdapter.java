@@ -33,7 +33,7 @@ public class FastSearchAdapter extends BaseQuickAdapter<Movie.Video, BaseViewHol
         ImageView ivThumb = helper.getView(R.id.ivThumb);
         if (!TextUtils.isEmpty(item.pic)) {
             // takagen99 : Use Glide instead
-            ImgUtil.load(item.pic, ivThumb, 14,AutoSizeUtils.mm2px(mContext, ImgUtil.defaultWidth), AutoSizeUtils.mm2px(mContext, ImgUtil.defaultHeight));
+            ImgUtil.load(item.pic, ivThumb, 14);
         } else {
             ivThumb.setImageResource(R.drawable.img_loading_placeholder);
         }
