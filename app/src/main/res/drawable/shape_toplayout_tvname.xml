@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 首页顶部栏站源背景 -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_focused="true" android:state_pressed="true">
         <shape>
-            <corners android:radius="@dimen/vs_20" />
+            <corners android:radius="@dimen/vs_10" />
             <solid android:color="?attr/color_theme_40" />
         </shape>
     </item>
     <item android:state_focused="false" android:state_pressed="true">
         <shape>
-            <corners android:radius="@dimen/vs_20" />
-            <solid android:color="@android:color/transparent" />
+            <corners android:radius="@dimen/vs_10" />
+            <solid android:color="?attr/color_theme_40" />
         </shape>
     </item>
     <item android:state_focused="true">
         <shape>
-            <corners android:radius="@dimen/vs_20" />
+            <corners android:radius="@dimen/vs_10" />
             <solid android:color="?attr/color_theme_40" />
-	    <!--添加选中外边框-->
-	    <stroke android:width="2mm" android:color="@android:color/white" />
+			<stroke android:width="2mm" android:color="@android:color/white" />
         </shape>
     </item>
     <item android:state_focused="false" android:state_pressed="false">
         <shape>
-            <corners android:radius="@dimen/vs_20" />
-            <solid android:color="@color/color_3D3D3D_50" />
+            <corners android:radius="@dimen/vs_10" />
+            <solid android:color="@android:color/transparent" />
         </shape>
     </item>
 </selector>

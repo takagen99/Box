@@ -114,7 +114,8 @@ public class AppsActivity extends BaseActivity {
 
             @Override
             public void onItemSelected(TvRecyclerView parent, View itemView, int position) {
-                itemView.animate().scaleX(1.05f).scaleY(1.05f).setDuration(300).setInterpolator(new BounceInterpolator()).start();
+			//修改放大参数
+                itemView.animate().scaleX(1.2f).scaleY(1.2f).setDuration(300).setInterpolator(new BounceInterpolator()).start();
             }
 
             @Override

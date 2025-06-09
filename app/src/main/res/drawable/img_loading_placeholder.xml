@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 略缩图加载占位图 -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape>
-            <solid android:color="#36ffffff" />
-            <corners android:radius="10mm" />
+            <corners android:radius="14px" />
         </shape>
     </item>
     <item

@@ -3,6 +3,7 @@ package com.github.tvbox.osc.ui.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.BounceInterpolator;// 添加选中放大效果
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -173,7 +174,23 @@ public class FastSearchActivity extends BaseActivity {
                 filterResult(spName);
             }
         });
+        // 添加选中放大效果
+        mGridView.setOnItemListener(new TvRecyclerView.OnItemListener() {
+            @Override
+            public void onItemPreSelected(TvRecyclerView parent, View itemView, int position) {
+                itemView.animate().scaleX(1.0f).scaleY(1.0f).setDuration(300).setInterpolator(new BounceInterpolator()).start();
+            }
 
+            @Override
+            public void onItemSelected(TvRecyclerView parent, View itemView, int position) {
+                itemView.animate().scaleX(1.2f).scaleY(1.2f).setDuration(300).setInterpolator(new BounceInterpolator()).start();
+            }
+
+            @Override
+            public void onItemClick(TvRecyclerView parent, View itemView, int position) {
+
+            }
+        });
         // mGridView.setHasFixedSize(true);
         mGridView.setLayoutManager(new V7GridLayoutManager(this.mContext, isBaseOnWidth() ? 4 : 5));
 

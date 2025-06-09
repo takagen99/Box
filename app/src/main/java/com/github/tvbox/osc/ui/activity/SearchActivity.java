@@ -250,6 +250,23 @@ public class SearchActivity extends BaseActivity {
                 }
             }
         });
+		//添加放大效果
+        mGridView.setOnItemListener(new TvRecyclerView.OnItemListener() {
+            @Override
+            public void onItemPreSelected(TvRecyclerView parent, View itemView, int position) {
+                itemView.animate().scaleX(1.0f).scaleY(1.0f).setDuration(300).setInterpolator(new BounceInterpolator()).start();
+            }
+
+            @Override
+            public void onItemSelected(TvRecyclerView parent, View itemView, int position) {
+                itemView.animate().scaleX(1.15f).scaleY(1.15f).setDuration(300).setInterpolator(new BounceInterpolator()).start();
+            }
+
+            @Override
+            public void onItemClick(TvRecyclerView parent, View itemView, int position) {
+
+            }
+        });
         mGridView.setHasFixedSize(true);
         // lite
         if (Hawk.get(HawkConfig.SEARCH_VIEW, 0) == 0)
@@ -645,10 +662,10 @@ public class SearchActivity extends BaseActivity {
                                     .get("data").getAsJsonObject()
                                     .get("mapResult").getAsJsonObject();
                             List<String> emoji;
-                            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.N)
-                                emoji = Arrays.asList(" ❶ ", " ❷ ", " ❸ ", " ❹ ", " ❺ ", " ❻ ", " ❼ ", " ❽ ", " ❾ ", " ❿ ", " ⑪ ", " ⑫ ", " ⑬ ", " ⑭ ", " ⑮ ", " ⑯ ", " ⑰ ", " ⑱ ", " ⑲ ", " ⑳ ");
-                            else
-                                emoji = Arrays.asList("\uD83E\uDD47", "\uD83E\uDD48", "\uD83E\uDD49", "4\uFE0F⃣", "5\uFE0F⃣", "6\uFE0F⃣", "7\uFE0F⃣", "8\uFE0F⃣", "9\uFE0F⃣", "\uD83D\uDD1F", " ⑪ ", " ⑫ ", " ⑬ ", " ⑭ ", " ⑮ ", " ⑯ ", " ⑰ ", " ⑱ ", " ⑲ ", " ⑳ ");
+                            if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.N)
+                                emoji = Arrays.asList(" ❶ "," ❷ "," ❸ "," ❹ "," ❺ "," ❻ "," ❼ "," ❽ "," ❾ "," ❿ "," ⑪ "," ⑫ "," ⑬ "," ⑭ "," ⑮ "," ⑯ "," ⑰ "," ⑱ "," ⑲ "," ⑳ ");
+                             else
+                                emoji = Arrays.asList("\uD83E\uDD47","\uD83E\uDD48","\uD83E\uDD49"," ❹ "," ❺ "," ❻ "," ❼ "," ❽ "," ❾ "," ❿ "," ⑪ "," ⑫ "," ⑬ "," ⑭ "," ⑮ "," ⑯ "," ⑰ "," ⑱ "," ⑲ "," ⑳ ");
                             JsonArray itemList = mapResult.get("0").getAsJsonObject()
                                     .get("listInfo").getAsJsonArray();
                             for (int i = 0; i < 10; i++) {

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 首页顶部栏站源选中 -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_focused="true" android:state_pressed="true" android:color="@color/color_FFFFFF_15" />
     <item android:state_focused="false" android:state_pressed="true" android:color="@color/color_FFFFFF_50" />

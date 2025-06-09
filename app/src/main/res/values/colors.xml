@@ -19,6 +19,9 @@
     <color name="color_3D3D3D">#3D3D3D</color>
     <color name="color_3D3D3D_45">#733D3D3D</color>
     <color name="color_3D3D3D_50">#803D3D3D</color>
+	
+    <!-- 筛选界面背景颜色 -->
+    <color name="color_3D3D3D_80">#CC3D3D3D</color>
 
     <!-- Live Menu BG (left / right) -->
     <color name="color_0E0E0E_90">#E60E0E0E</color>

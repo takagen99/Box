@@ -753,7 +753,7 @@ public class LivePlayActivity extends BaseActivity {
         @Override
         public void run() {
             Date date = new Date();
-            SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm aa", Locale.ENGLISH);
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.ENGLISH);
             tv_sys_time.setText(timeFormat.format(date));
             mHandler.postDelayed(this, 1000);
 

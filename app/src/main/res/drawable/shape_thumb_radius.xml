@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- APP软件管理图标和略缩图单独圆角背景 -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_focused="true">
         <shape>
-            <corners android:radius="@dimen/vs_14" />
-            <stroke android:width="@dimen/vs_2" android:color="@color/color_FFFFFF" />
+            <corners android:radius="14px" />
+            <stroke android:width="2mm" android:color="@color/color_FFFFFF" />
             <solid android:color="?attr/color_theme_40" />
         </shape>
     </item>
     <item android:state_focused="false">
         <shape>
-            <corners android:radius="@dimen/vs_14" />
-            <solid android:color="@color/color_3D3D3D_45"/>
+            <corners android:radius="14px" />
+            <solid android:color="#36ffffff"/>
         </shape>
     </item>
 </selector>

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 搜索框进入 -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <!--获得焦点-->
     <item android:state_focused="true">
         <shape>
             <corners android:radius="10mm" />
-            <stroke
-                android:width="@dimen/vs_2"
-                android:color="#FFFFFFFF" />
+            <solid android:color="?color_theme_40" />
+            <stroke android:width="2mm" android:color="@android:color/white" />
         </shape>
     </item>
     <!--默认-->
@@ -15,7 +15,7 @@
             <corners android:radius="10mm" />
             <stroke
                 android:width="@dimen/vs_2"
-                android:color="#99FFFFFF" />
+                android:color="#70FFFFFF" />
         </shape>
     </item>
 </selector>

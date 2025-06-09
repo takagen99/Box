@@ -21,10 +21,10 @@
         android:shadowDy="0"
         android:shadowRadius="5"
         android:textAlignment="gravity"
-        android:textColor="@color/color_000000_80"
+        android:textColor="@color/color_FFFFFF"
         android:textSize="@dimen/ts_24"
         android:textStyle="bold"
-        tools:text="11111111111" />
+        tools:text="11111111111" /><!-- android:shadowColor="@color/color_FFFFFF" -->
 
     <com.owen.tvrecyclerview.widget.TvRecyclerView
         android:id="@+id/mFilterKv"

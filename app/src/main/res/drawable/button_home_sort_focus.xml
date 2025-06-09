@@ -4,6 +4,8 @@
         <shape>
             <corners android:radius="20mm"/>
             <solid android:color="?attr/color_theme_50"/>
+	    <!--添加选中外边框-->
+	    <stroke android:width="2mm" android:color="@android:color/white" />
         </shape>
     </item>
     <item android:state_focused="false">

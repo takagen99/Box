@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 搜索页面 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/fl_root_view"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/shape_user_focus"
+    android:background="@drawable/shape_thumb_radius"
     android:focusable="true"
     android:padding="@dimen/vs_1">
 
     <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/vs_280">
+        android:layout_width="@dimen/vs_185"
+        android:layout_height="@dimen/vs_260">
 
         <ImageView
             android:id="@+id/ivThumb"

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- APP软件管理页面 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/shape_user_focus"
+    android:background="@drawable/shape_thumb_radius"
     android:focusable="true"
     android:padding="@dimen/vs_1">
 
@@ -15,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="@dimen/vs_25"
-            android:padding="@dimen/vs_35"
+            android:padding="@dimen/vs_25"
             android:scaleType="fitCenter" />
 
         <LinearLayout

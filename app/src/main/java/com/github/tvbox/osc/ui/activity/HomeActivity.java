@@ -120,7 +120,8 @@ public class HomeActivity extends BaseActivity {
         public void run() {
             Date date = new Date();
             @SuppressLint("SimpleDateFormat")
-            SimpleDateFormat timeFormat = new SimpleDateFormat(getString(R.string.hm_date1) + ", " + getString(R.string.hm_date2));
+			//修改时间分隔符
+            SimpleDateFormat timeFormat = new SimpleDateFormat(getString(R.string.hm_date1) + " | " + getString(R.string.hm_date2));
             tvDate.setText(timeFormat.format(date));
             mHandler.postDelayed(this, 1000);
         }

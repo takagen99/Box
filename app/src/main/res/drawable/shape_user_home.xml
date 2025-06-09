@@ -16,6 +16,8 @@
         <shape>
             <corners android:radius="15mm" />
             <solid android:color="?attr/color_theme_40"/>
+	    <!--添加选中边框-->
+	    <stroke android:width="2mm" android:color="@android:color/white" />
         </shape>
     </item>
     <item android:state_focused="false" android:state_pressed="false">

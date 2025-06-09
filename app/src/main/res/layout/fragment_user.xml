@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 首页略缩图样式 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -290,7 +291,7 @@
         </LinearLayout>
 
     </LinearLayout>
-
+<!-- 首页多行排版 -->
     <com.owen.tvrecyclerview.widget.TvRecyclerView
         android:id="@+id/tvHotListForGrid"
         android:layout_width="match_parent"
@@ -299,17 +300,17 @@
         android:clipChildren="false"
         android:clipToPadding="false"
         android:descendantFocusability="afterDescendants"
-        android:paddingLeft="@dimen/vs_5"
+        android:paddingLeft="@dimen/vs_20"
         android:paddingTop="@dimen/vs_30"
-        android:paddingRight="@dimen/vs_5"
-        android:paddingBottom="@dimen/vs_10"
+        android:paddingRight="@dimen/vs_20"
+        android:paddingBottom="@dimen/vs_30"
         android:tag="tvHotListForGrid"
         android:visibility="gone"
-        app:tv_horizontalSpacingWithMargins="@dimen/vs_10"
+        app:tv_horizontalSpacingWithMargins="@dimen/vs_20"
         app:tv_layoutManager="V7GridLayoutManager"
         app:tv_selectedItemIsCentered="true"
-        app:tv_verticalSpacingWithMargins="@dimen/vs_15" />
-
+        app:tv_verticalSpacingWithMargins="@dimen/vs_20" />
+<!-- 首页单行排版 -->
     <com.owen.tvrecyclerview.widget.TvRecyclerView
         android:id="@+id/tvHotListForLine"
         android:layout_width="match_parent"
@@ -317,14 +318,14 @@
         android:clipChildren="false"
         android:clipToPadding="false"
         android:orientation="horizontal"
-        android:paddingLeft="@dimen/vs_0"
+        android:paddingLeft="@dimen/vs_20"
         android:paddingTop="@dimen/vs_30"
-        android:paddingRight="@dimen/vs_0"
-        android:paddingBottom="@dimen/vs_10"
+        android:paddingRight="@dimen/vs_20"
+        android:paddingBottom="@dimen/vs_30"
         android:tag="tvHotListForLine"
-        app:tv_horizontalSpacingWithMargins="@dimen/vs_10"
+        app:tv_horizontalSpacingWithMargins="@dimen/vs_20"
         app:tv_layoutManager="V7LinearLayoutManager"
         app:tv_selectedItemIsCentered="true"
-        app:tv_verticalSpacingWithMargins="@dimen/vs_10" />
+        app:tv_verticalSpacingWithMargins="@dimen/vs_20" />
 
 </LinearLayout>

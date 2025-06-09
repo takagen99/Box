@@ -381,7 +381,7 @@
                     android:layout_width="@dimen/vs_240"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center|right"
-                    android:fontFamily="@font/advent_pro_extralight"
+                    android:fontFamily="sans-serif"
                     android:gravity="right"
                     android:maxLines="1"
                     android:paddingRight="@dimen/vs_60"

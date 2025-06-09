@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 聚合搜索页面 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -80,9 +81,10 @@
                 android:clipChildren="false"
                 android:clipToPadding="false"
                 android:visibility="invisible"
-                app:tv_horizontalSpacingWithMargins="@dimen/vs_5"
+                android:padding="@dimen/vs_40"
+                app:tv_horizontalSpacingWithMargins="@dimen/vs_30"
                 app:tv_selectedItemIsCentered="true"
-                app:tv_verticalSpacingWithMargins="@dimen/vs_5" />
+                app:tv_verticalSpacingWithMargins="@dimen/vs_30" />
 
             <com.owen.tvrecyclerview.widget.TvRecyclerView
                 android:id="@+id/mGridViewFilter"
@@ -91,9 +93,11 @@
                 android:clipChildren="false"
                 android:clipToPadding="false"
                 android:visibility="invisible"
+                android:paddingTop="@dimen/vs_40"
+                android:paddingLeft="@dimen/vs_50"
                 app:tv_horizontalSpacingWithMargins="@dimen/vs_5"
                 app:tv_selectedItemIsCentered="true"
-                app:tv_verticalSpacingWithMargins="@dimen/vs_5" />
+                app:tv_verticalSpacingWithMargins="@dimen/vs_55" />
         </LinearLayout>
 
     </LinearLayout>

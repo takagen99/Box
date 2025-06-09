@@ -23,6 +23,8 @@
                 <shape>
                     <corners android:radius="@dimen/vs_20" />
                     <solid android:color="?attr/color_theme_70" />
+	    <!--添加选中边框-->
+	    <stroke android:width="2mm" android:color="@android:color/white" />
                 </shape>
             </item>
             <item
