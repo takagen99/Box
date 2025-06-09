@@ -94,7 +94,7 @@ public class GridAdapter extends BaseQuickAdapter<Movie.Video, BaseViewHolder> {
         }
         //由于部分电视机使用glide报错
         if (!TextUtils.isEmpty(item.pic)) {
-            ImgUtil.load(item.pic, ivThumb,  (int) App.getInstance().getResources().getDimension(R.dimen.vs_5), AutoSizeUtils.mm2px(mContext,newWidth), AutoSizeUtils.mm2px(mContext,newHeight));
+            ImgUtil.load(item.pic, ivThumb, 14);
         } else {
             
             ivThumb.setImageResource(R.drawable.img_loading_placeholder);
