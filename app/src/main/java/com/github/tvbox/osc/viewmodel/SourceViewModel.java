@@ -1113,12 +1113,15 @@ public class SourceViewModel extends ViewModel {
         if (data.movie != null && data.movie.videoList != null && data.movie.videoList.size() == 1) {
             Movie.Video video = data.movie.videoList.get(0);
             if (video != null && video.urlBean != null && video.urlBean.infoList != null) {
-                boolean hasThunder = false;
-                for (int idx = 0; idx < video.urlBean.infoList.size(); idx++) {
+            	boolean hasThunder=false;
+                thunderLoop:
+                for (int idx=0;idx<video.urlBean.infoList.size();idx++) {
                     Movie.Video.UrlBean.UrlInfo urlInfo = video.urlBean.infoList.get(idx);
-                    if (Thunder.isSupportUrl(urlInfo.beanList.get(0).url)) {
-                        hasThunder = true;
-                        break;
+                    for (Movie.Video.UrlBean.UrlInfo.InfoBean infoBean : urlInfo.beanList) {
+                        if(Thunder.isSupportUrl(infoBean.url)){
+                            hasThunder=true;
+                            break thunderLoop;
+                        }
                     }
                 }
                 if (hasThunder) {
@@ -1137,18 +1140,14 @@ public class SourceViewModel extends ViewModel {
                         @Override
                         public void list(Map<Integer, String> urlMap) {
                             for (int key : urlMap.keySet()) {
-                                String playList = urlMap.get(key);
+                                String playList=urlMap.get(key);
                                 video.urlBean.infoList.get(key).urls = playList;
                                 String[] str = playList.split("#");
                                 List<Movie.Video.UrlBean.UrlInfo.InfoBean> infoBeanList = new ArrayList<>();
                                 for (String s : str) {
                                     if (s.contains("$")) {
                                         String[] ss = s.split("\\$");
-                                            /*
-                                            if (ss.length >= 2) {
-                                                infoBeanList.add(new Movie.Video.UrlBean.UrlInfo.InfoBean(ss[0], ss[1]));
-                                            }
-                                            */
+
                                         if (ss.length > 0) {
                                             if (ss.length >= 2) {
                                                 infoBeanList.add(new Movie.Video.UrlBean.UrlInfo.InfoBean(ss[0], ss[1]));
@@ -1171,7 +1170,7 @@ public class SourceViewModel extends ViewModel {
                 }
             }
         }
-        if (!thunderParse && index == 0) {
+        if (!thunderParse && index==0) {
             detailResult.postValue(data);
         }
     }
