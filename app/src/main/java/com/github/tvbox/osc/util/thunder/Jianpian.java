@@ -23,45 +23,31 @@ public class Jianpian {
                 if (replace.contains("xgplay://")) {
                     replace = split[0].replace("xgplay://", "ftp://");
                 }
-                if (TextUtils.isEmpty(App.burl)) {
-                    App.getp2p()
-                        .P2Pdoxstart(replace.getBytes("GBK"));
-                    App.getp2p()
-                        .P2Pdoxadd(replace.getBytes("GBK"));
-                } else if (replace.equals(App.burl)) {
-                    App.getp2p()
-                        .P2Pdoxstart(replace.getBytes("GBK"));
-                } else {
-                    App.getp2p()
-                        .P2Pdoxpause(App.burl.getBytes("GBK"));
-                    App.getp2p()
-                        .P2Pdoxdel(App.burl.getBytes("GBK"));
-                    App.getp2p()
-                        .P2Pdoxstart(replace.getBytes("GBK"));
-                    App.getp2p()
-                        .P2Pdoxadd(replace.getBytes("GBK"));
+                if (!TextUtils.isEmpty(App.burl)) {
+                    App.getp2p().P2Pdoxpause(App.burl.getBytes("GBK"));
+                    App.getp2p().P2Pdoxdel(App.burl.getBytes("GBK"));
                 }
                 App.burl = replace;
-                return "http://" + LocalIPAddress.getIP(App.getInstance()) + ":" + P2PClass.port + "/" + URLEncoder.encode(Uri.parse(replace).getLastPathSegment(), "GBK");                
+                App.getp2p().P2Pdoxstart(replace.getBytes("GBK"));
+                App.getp2p().P2Pdoxadd(replace.getBytes("GBK"));
+                return "http://" + LocalIPAddress.getIP(App.getInstance()) + ":" + P2PClass.port + "/" + URLEncoder.encode(Uri.parse(replace).getLastPathSegment(), "GBK");
             } catch (Exception e) {
                 return e.getLocalizedMessage();
             }
+        } else {
+            return "";
         }
-        return "";
     }
-    
+
     public static void finish() {
-        if (TextUtils.isEmpty(App.burl) || App.getp2p() == null) {
-            return;
-        }
-        try {
-            App.getp2p()
-                .P2Pdoxpause(App.burl.getBytes("GBK"));
-            App.getp2p()
-                .P2Pdoxdel(App.burl.getBytes("GBK"));
-            App.burl = "";
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        if (!TextUtils.isEmpty(App.burl) && App.getp2p() != null) {
+            try {
+                App.getp2p().P2Pdoxpause(App.burl.getBytes("GBK"));
+                App.getp2p().P2Pdoxdel(App.burl.getBytes("GBK"));
+                App.burl = "";
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
         }
     }
 
