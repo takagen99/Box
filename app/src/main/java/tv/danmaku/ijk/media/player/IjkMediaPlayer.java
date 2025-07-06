@@ -1118,8 +1118,26 @@ public final class IjkMediaPlayer extends AbstractMediaPlayer {
                     if (msg.obj == null) {
                         player.notifyOnTimedText(null);
                     } else {
-                        IjkTimedText text = new IjkTimedText(new Rect(0, 0, 1, 1), (String) msg.obj);
-                        player.notifyOnTimedText(text);
+                        String msg_text=(String) msg.obj;
+                        if(msg_text.contains("{\\fad")){
+                            player.notifyOnTimedText(null);
+                            return;
+                        }
+                        if (msg.arg1 == 0) {// normal
+                            IjkTimedText text = new IjkTimedText(new Rect(0, 0, 1, 1), msg_text);
+                            player.notifyOnTimedText(text);
+                        } else if (msg.arg1 == 1) { // ass
+                            IjkTimedText text = new IjkTimedText(new Rect(0, 0, 1, 1), msg_text);
+                            player.notifyOnTimedText(text);
+                        } else if (msg.arg1 == 2) { // bitmap
+                            IjkTimedText text;
+                            if (msg.arg2 > 0 && ((int[]) msg.obj).length == msg.arg2) {
+                                text = new IjkTimedText((int[]) msg.obj);
+                            } else {
+                                text = new IjkTimedText(null, "");
+                            }
+                            player.notifyOnTimedText(text);
+                        }
                     }
                     return;
                 case MEDIA_NOP: // interface test message - ignore
