@@ -34,6 +34,9 @@ public class TextureRenderView extends TextureView implements IRenderView, Textu
     @Override
     public void attachToPlayer(@NonNull AbstractPlayer player) {
         this.mMediaPlayer = player;
+        if (mSurface != null) {
+            mMediaPlayer.setSurface(mSurface);
+        }
     }
 
     @Override

@@ -170,6 +170,13 @@ public class HawkUtils {
     /**
      * 返回程序 需要的值 exo渲染器模式
      */
+    public static int getExoRendererModeActualValue(Context context) {
+        if (DeviceCapability.get(context).isTV() && getExoRenderer() == 0) {
+            return DefaultRenderersFactory.EXTENSION_RENDERER_MODE_OFF;
+        }
+        return getExoRendererModeActualValue();
+    }
+
     public static int getExoRendererModeActualValue() {
         int i = getExoRendererMode();
         switch (i) {
@@ -191,6 +198,9 @@ public class HawkUtils {
     public static String getExoRendererModeDesc() {
         App app = App.getInstance();
         String[] array = app.getResources().getStringArray(R.array.media_content_ExoPlayer_renderer_mode);
+        if (DeviceCapability.get(app).isTV() && getExoRenderer() == 0) {
+            return array[2];
+        }
         return array[getExoRendererMode()];
     }
 
