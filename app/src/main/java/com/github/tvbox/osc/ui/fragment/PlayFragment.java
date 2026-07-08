@@ -805,7 +805,7 @@ public class PlayFragment extends BaseLazyFragment {
             public void run() {
                 stopParse();
                 if (mVideoView != null) {
-                    mVideoView.release();
+                    mVideoView.releasePlayerKeepRenderView();
                     if (finalUrl != null) {
                         String url = finalUrl;
                         videoURL = url;                        
@@ -1302,7 +1302,7 @@ public class PlayFragment extends BaseLazyFragment {
 
         stopParse();
         initParseLoadFound();
-        if (mVideoView != null) mVideoView.release();
+        if (mVideoView != null) mVideoView.releasePlayerKeepRenderView();
         subtitleCacheKey = mVodInfo.sourceKey + "-" + mVodInfo.id + "-" + mVodInfo.playFlag + "-" + mVodInfo.getplayIndex() + "-" + vs.name + "-subt";
         progressKey = mVodInfo.sourceKey + mVodInfo.id + mVodInfo.playFlag + mVodInfo.getplayIndex();
         //重新播放清除现有进度

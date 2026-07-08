@@ -41,7 +41,15 @@ public class PlayerHelper {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        if (forcePlayerType >= 0) playerType = forcePlayerType;
+        DeviceCapability capability = DeviceCapability.get(videoView.getContext());
+        if (forcePlayerType >= 0) {
+            playerType = forcePlayerType;
+        } else if (capability.isTV() && capability.supportsTunneledPlayback() && capability.hasHevcHwDecoder()) {
+            playerType = 2;
+        }
+        if (playerType == 2 && capability.shouldUseSurfaceView()) {
+            renderType = 1;
+        }
         IJKCode codec = ApiConfig.get().getIJKCodec(ijkCode);
         PlayerFactory playerFactory;
         if (playerType == 1) {
@@ -85,6 +93,10 @@ public class PlayerHelper {
 
     public static void updateCfg(VideoView videoView) {
         int playType = Hawk.get(HawkConfig.PLAY_TYPE, 0);
+        DeviceCapability capability = DeviceCapability.get(videoView.getContext());
+        if (capability.isTV() && capability.supportsTunneledPlayback() && capability.hasHevcHwDecoder()) {
+            playType = 2;
+        }
         PlayerFactory playerFactory;
         if (playType == 1) {
             playerFactory = new PlayerFactory<IjkmPlayer>() {
@@ -107,15 +119,22 @@ public class PlayerHelper {
             playerFactory = AndroidMediaPlayerFactory.create();
         }
         int renderType = Hawk.get(HawkConfig.PLAY_RENDER, 0);
+        if (playType == 2 && capability.shouldUseSurfaceView()) {
+            renderType = 1;
+        }
         RenderViewFactory renderViewFactory = null;
-        switch (renderType) {
-            case 0:
-            default:
-                renderViewFactory = TextureRenderViewFactory.create();
-                break;
-            case 1:
-                renderViewFactory = SurfaceRenderViewFactory.create();
-                break;
+        if (playType == 2) {
+            renderViewFactory = PlayerViewRenderViewFactory.create(renderType);
+        } else {
+            switch (renderType) {
+                case 0:
+                default:
+                    renderViewFactory = TextureRenderViewFactory.create();
+                    break;
+                case 1:
+                    renderViewFactory = SurfaceRenderViewFactory.create();
+                    break;
+            }
         }
         videoView.setPlayerFactory(playerFactory);
         videoView.setRenderViewFactory(renderViewFactory);

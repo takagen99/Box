@@ -41,6 +41,7 @@ public class PlayerViewRenderView extends PlayerView implements IRenderView {
         super(context, attrs, defStyleAttr);
         // mMeasureHelper = new MeasureHelper();
         setUseController(false);
+        setKeepContentOnPlayerReset(true);
         SubtitleView subtitleView = getSubtitleView();
         if (subtitleView != null) {//隐藏PlayerView自带的字幕
             subtitleView.setAlpha(0);

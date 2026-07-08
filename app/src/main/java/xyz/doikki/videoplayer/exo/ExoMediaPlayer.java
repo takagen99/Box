@@ -24,6 +24,7 @@ import androidx.media3.exoplayer.trackselection.TrackSelectionArray;
 import androidx.media3.ui.PlayerView;
 
 import com.github.tvbox.osc.base.App;
+import com.github.tvbox.osc.util.DeviceCapability;
 import com.github.tvbox.osc.util.HawkConfig;
 import com.github.tvbox.osc.util.HawkUtils;
 import com.github.tvbox.osc.util.PlayerHelper;
@@ -70,15 +71,26 @@ public class ExoMediaPlayer extends AbstractPlayer implements Player.Listener {
             mRenderersFactory = HawkUtils.createExoRendererActualValue(mAppContext);
         }
         //https://github.com/androidx/media/blob/release/libraries/decoder_ffmpeg/README.md
-        mRenderersFactory.setExtensionRendererMode(HawkUtils.getExoRendererModeActualValue());
+        mRenderersFactory.setExtensionRendererMode(HawkUtils.getExoRendererModeActualValue(mAppContext));
 
         if (mTrackSelector == null) {
             mTrackSelector = new DefaultTrackSelector(mAppContext);
         }
         if (mLoadControl == null) {
-            mLoadControl = new DefaultLoadControl();
+            DeviceCapability capability = DeviceCapability.get(mAppContext);
+            if (capability.getMemoryClass() == DeviceCapability.MEMORY_LOW) {
+                mLoadControl = new DefaultLoadControl.Builder()
+                        .setBufferDurationsMs(5_000, 15_000, 1_000, 2_000)
+                        .build();
+            } else {
+                mLoadControl = new DefaultLoadControl();
+            }
         }
-        mTrackSelector.setParameters(mTrackSelector.getParameters().buildUpon().setPreferredTextLanguage(Locale.getDefault().getISO3Language()).setTunnelingEnabled(true));
+        DeviceCapability capability = DeviceCapability.get(mAppContext);
+        mTrackSelector.setParameters(mTrackSelector.getParameters().buildUpon()
+                .setPreferredTextLanguage(Locale.getDefault().getISO3Language())
+                .setTunnelingEnabled(capability.isTV() && capability.supportsTunneledPlayback())
+                .setAllowVideoMixedMimeTypeAdaptiveness(true));
         /*mMediaPlayer = new ExoPlayer.Builder(
                 mAppContext,
                 mRenderersFactory,

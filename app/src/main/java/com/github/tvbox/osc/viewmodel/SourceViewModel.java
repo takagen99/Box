@@ -20,6 +20,7 @@ import com.github.tvbox.osc.bean.MovieSort;
 import com.github.tvbox.osc.bean.SourceBean;
 import com.github.tvbox.osc.event.RefreshEvent;
 import com.github.tvbox.osc.util.DefaultConfig;
+import com.github.tvbox.osc.util.DeviceCapability;
 import com.github.tvbox.osc.util.HawkConfig;
 import com.github.tvbox.osc.util.LOG;
 import com.github.tvbox.osc.util.MD5;
@@ -81,7 +82,8 @@ public class SourceViewModel extends ViewModel {
             searchExecutorService = null;
             JsLoader.stopAll();
         }
-        searchExecutorService = Executors.newFixedThreadPool(5);
+        int poolSize = DeviceCapability.get(App.getInstance()).getMemoryClass() == DeviceCapability.MEMORY_LOW ? 2 : 5;
+        searchExecutorService = Executors.newFixedThreadPool(poolSize);
     }
 
     public void execute(Runnable runnable) {
@@ -766,7 +768,7 @@ public class SourceViewModel extends ViewModel {
 
     public void getPlay(String sourceKey, String playFlag, String progressKey, String url, String subtitleKey) {
         if (threadPoolGetPlay != null) threadPoolGetPlay.shutdownNow();
-        threadPoolGetPlay = Executors.newFixedThreadPool(2);
+        threadPoolGetPlay = Executors.newSingleThreadExecutor();
         Callable<JSONObject> callable = () -> {
             if (Thread.currentThread().isInterrupted()) return null;
             SourceBean sourceBean = ApiConfig.get().getSource(sourceKey);
@@ -801,9 +803,8 @@ public class SourceViewModel extends ViewModel {
             return result;
         };
         threadPoolGetPlay.execute(() -> {
-            Future<JSONObject> future = threadPoolGetPlay.submit(callable);
             try {
-                JSONObject jsonObject = future.get(15, TimeUnit.SECONDS);
+                JSONObject jsonObject = callable.call();
                 playResult.postValue(jsonObject);
             } catch (Throwable e) {
                 e.printStackTrace();

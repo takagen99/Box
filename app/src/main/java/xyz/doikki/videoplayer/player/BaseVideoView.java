@@ -282,8 +282,8 @@ public class BaseVideoView<P extends AbstractPlayer> extends FrameLayout
      */
     protected void addDisplay() {
         if (mRenderView != null) {
-            mPlayerContainer.removeView(mRenderView.getView());
-            mRenderView.release();
+            mRenderView.attachToPlayer(mMediaPlayer);
+            return;
         }
         mRenderView = mRenderViewFactory.createRenderView(getContext());
         mRenderView.attachToPlayer(mMediaPlayer);
@@ -372,19 +372,38 @@ public class BaseVideoView<P extends AbstractPlayer> extends FrameLayout
      * 释放播放器
      */
     public void release() {
+        if (mMediaPlayer != null) {
+            mMediaPlayer.release();
+            mMediaPlayer = null;
+        }
+        if (mRenderView != null) {
+            mPlayerContainer.removeView(mRenderView.getView());
+            mRenderView.release();
+            mRenderView = null;
+        }
+        if (mAssetFileDescriptor != null) {
+            try {
+                mAssetFileDescriptor.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (mAudioFocusHelper != null) {
+            mAudioFocusHelper.abandonFocus();
+            mAudioFocusHelper = null;
+        }
+        mPlayerContainer.setKeepScreenOn(false);
+        saveProgress();
+        mCurrentPosition = 0;
+        setPlayState(STATE_IDLE);
+    }
+
+    public void releasePlayerKeepRenderView() {
         if (!isInIdleState()) {
-            //释放播放器
             if (mMediaPlayer != null) {
                 mMediaPlayer.release();
                 mMediaPlayer = null;
             }
-            //释放renderView
-            if (mRenderView != null) {
-                mPlayerContainer.removeView(mRenderView.getView());
-                mRenderView.release();
-                mRenderView = null;
-            }
-            //释放Assets资源
             if (mAssetFileDescriptor != null) {
                 try {
                     mAssetFileDescriptor.close();
@@ -392,18 +411,13 @@ public class BaseVideoView<P extends AbstractPlayer> extends FrameLayout
                     e.printStackTrace();
                 }
             }
-            //关闭AudioFocus监听
             if (mAudioFocusHelper != null) {
                 mAudioFocusHelper.abandonFocus();
                 mAudioFocusHelper = null;
             }
-            //关闭屏幕常亮
             mPlayerContainer.setKeepScreenOn(false);
-            //保存播放进度
             saveProgress();
-            //重置播放进度
             mCurrentPosition = 0;
-            //切换转态
             setPlayState(STATE_IDLE);
         }
     }
@@ -735,6 +749,12 @@ public class BaseVideoView<P extends AbstractPlayer> extends FrameLayout
     public void setRenderViewFactory(RenderViewFactory renderViewFactory) {
         if (renderViewFactory == null) {
             throw new IllegalArgumentException("RenderViewFactory can not be null!");
+        }
+        if (mRenderView != null && mRenderViewFactory != null
+                && !mRenderViewFactory.getClass().equals(renderViewFactory.getClass())) {
+            mPlayerContainer.removeView(mRenderView.getView());
+            mRenderView.release();
+            mRenderView = null;
         }
         mRenderViewFactory = renderViewFactory;
     }

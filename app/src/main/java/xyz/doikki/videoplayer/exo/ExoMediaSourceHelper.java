@@ -29,6 +29,7 @@ import androidx.media3.extractor.ExtractorsFactory;
 import androidx.media3.extractor.ts.DefaultTsPayloadReaderFactory;
 import androidx.media3.extractor.ts.TsExtractor;
 
+import com.github.tvbox.osc.util.DeviceCapability;
 import com.github.tvbox.osc.util.FileUtils;
 import com.google.androidx.media3.exoplayer.ext.okhttp.OkHttpDataSource;
 
@@ -167,7 +168,7 @@ public final class ExoMediaSourceHelper {
     private Cache newCache() {
         return new SimpleCache(
                 new File(FileUtils.getExternalCachePath(), "exo-video-cache"),//缓存目录
-                new LeastRecentlyUsedCacheEvictor(512 * 1024 * 1024),//缓存大小，默认512M，使用LRU算法实现
+                new LeastRecentlyUsedCacheEvictor(DeviceCapability.get(mAppContext).getRecommendedCacheSize()),
                 new StandaloneDatabaseProvider(mAppContext));
     }
 
